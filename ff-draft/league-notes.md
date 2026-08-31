@@ -32,6 +32,30 @@ sourced from email only. Anything not directly stated in an email is marked
   league surfaced in the searches run. The draft board defaults to a 16-man
   roster as a placeholder — editable in the tool.
 
+## Roster shape — historical signal (not confirmed current)
+
+Found one more useful thread: this league's Yahoo predecessor ("Jim Wells in
+the Fist Round," 2017 — Alex became commissioner of the renamed "All's Wells
+that ends Wells" in 2020 per a Yahoo transfer-of-commissioner email) shows
+actual settings-change notifications:
+
+- **Starting lineup (2017)**: QB, WR, WR, RB, RB, TE, W/R/T — 7 starters, one
+  flex, **no kicker or defense** in the starters list shown.
+- **Draft type**: "Live Auction" confirmed in multiple settings emails across
+  2018–2019, consistent with what's used today.
+- **Scoring categories** included Rec (receptions are scored — consistent
+  with PPR) alongside standard yard/TD categories, but the actual point
+  value per reception was never shown in any snippet pulled.
+- Team count fluctuated year to year in this history (10 → 8 → 10 → 8, per
+  various settings-change emails) before settling at 8 for the current era.
+
+Treat this as a strong directional signal (auction, PPR-flavored, flex-heavy,
+historically no K/DEF) rather than confirmed 2026 settings — 9 years old and
+roster construction could have changed since. `draft-board.html` still
+defaults to a generic 16-spot roster; if the league in fact carries no
+K/DEF, drop the K/DEF rows out of the Bid Sheet tab and adjust the roster
+count down.
+
 ## Owners (8 teams)
 
 | Owner | Email | 2026 Team Name |
