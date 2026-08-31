@@ -1,0 +1,670 @@
+<title>Wells Auction Board</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+  :root{
+    --bg:#F6F4EE;
+    --surface:#FFFFFF;
+    --surface-2:#EDEAE1;
+    --border:#DCD7C9;
+    --ink:#1C2321;
+    --ink-muted:#5B6560;
+    --accent:#2F6E4F;
+    --accent-ink:#FFFFFF;
+    --money:#9C6B15;
+    --good:#2F6E4F;
+    --good-bg:#E4EEE5;
+    --warn:#C17817;
+    --warn-bg:#F5E9D4;
+    --critical:#B23A2E;
+    --critical-bg:#F5E0DC;
+    --shadow: 0 1px 2px rgba(28,35,33,0.06), 0 4px 14px rgba(28,35,33,0.05);
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#101513;
+      --surface:#182220;
+      --surface-2:#1E2B27;
+      --border:#2C3A35;
+      --ink:#EDEDE6;
+      --ink-muted:#9AA6A0;
+      --accent:#5FAE82;
+      --accent-ink:#0C1412;
+      --money:#D9A445;
+      --good:#5FAE82;
+      --good-bg:#1B2E24;
+      --warn:#E0A83E;
+      --warn-bg:#332614;
+      --critical:#E4796B;
+      --critical-bg:#361F1B;
+      --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 8px 24px rgba(0,0,0,0.35);
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#101513;
+    --surface:#182220;
+    --surface-2:#1E2B27;
+    --border:#2C3A35;
+    --ink:#EDEDE6;
+    --ink-muted:#9AA6A0;
+    --accent:#5FAE82;
+    --accent-ink:#0C1412;
+    --money:#D9A445;
+    --good:#5FAE82;
+    --good-bg:#1B2E24;
+    --warn:#E0A83E;
+    --warn-bg:#332614;
+    --critical:#E4796B;
+    --critical-bg:#361F1B;
+    --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 8px 24px rgba(0,0,0,0.35);
+  }
+
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--bg);
+    color:var(--ink);
+    font-family:"IBM Plex Sans", system-ui, -apple-system, sans-serif;
+    font-size:15px;
+    line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3{
+    font-family:"Fraunces", Georgia, serif;
+    font-weight:600;
+    text-wrap:balance;
+    margin:0;
+  }
+  .num{
+    font-family:"IBM Plex Mono", ui-monospace, monospace;
+    font-variant-numeric:tabular-nums;
+  }
+  button{font-family:inherit;}
+  input,select{font-family:inherit;}
+  :focus-visible{outline:2px solid var(--accent); outline-offset:2px;}
+
+  .wrap{max-width:1000px;margin:0 auto;padding:0 16px 64px;}
+
+  /* ---- Header ---- */
+  header.top{
+    position:sticky; top:0; z-index:20;
+    background:var(--bg);
+    border-bottom:1px solid var(--border);
+    padding:14px 16px 12px;
+  }
+  .top-inner{max-width:1000px;margin:0 auto;}
+  .eyebrow{
+    font-size:11px; letter-spacing:0.08em; text-transform:uppercase;
+    color:var(--ink-muted); font-weight:600;
+  }
+  h1.title{font-size:22px; margin-top:2px;}
+  .pot-strip{
+    display:flex; gap:14px; flex-wrap:wrap;
+    margin-top:10px;
+  }
+  .pot-stat{
+    display:flex; flex-direction:column; gap:1px;
+  }
+  .pot-stat .label{font-size:10.5px; color:var(--ink-muted); text-transform:uppercase; letter-spacing:0.06em;}
+  .pot-stat .val{font-size:17px; font-weight:600; color:var(--ink);}
+  .pot-stat .val.money{color:var(--money);}
+
+  /* ---- Tabs ---- */
+  .tabs{
+    display:flex; gap:4px; margin-top:14px;
+    background:var(--surface-2); border-radius:10px; padding:3px;
+  }
+  .tab{
+    flex:1; text-align:center; padding:8px 6px; border-radius:8px;
+    font-size:13px; font-weight:600; color:var(--ink-muted);
+    background:transparent; border:none; cursor:pointer;
+  }
+  .tab[aria-selected="true"]{
+    background:var(--surface); color:var(--ink); box-shadow:var(--shadow);
+  }
+
+  main{padding-top:16px;}
+  section.panel{display:none;}
+  section.panel.active{display:block;}
+
+  /* ---- Board (teams) ---- */
+  .settings-row{
+    display:flex; gap:10px; align-items:center; flex-wrap:wrap;
+    margin-bottom:14px; font-size:12.5px; color:var(--ink-muted);
+  }
+  .settings-row label{display:flex; align-items:center; gap:6px;}
+  .settings-row input{
+    width:52px; padding:4px 6px; border:1px solid var(--border);
+    border-radius:6px; background:var(--surface); color:var(--ink);
+    font-size:13px;
+  }
+
+  .team-grid{
+    display:grid; grid-template-columns:repeat(auto-fill, minmax(220px,1fr));
+    gap:10px;
+  }
+  .team-card{
+    background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    padding:12px 14px; box-shadow:var(--shadow);
+  }
+  .team-card .owner{font-size:11px; color:var(--ink-muted); text-transform:uppercase; letter-spacing:0.05em;}
+  .team-card .name{font-family:"Fraunces",serif; font-weight:600; font-size:15.5px; margin-top:1px;}
+  .team-card .figures{
+    display:flex; justify-content:space-between; align-items:baseline;
+    margin-top:10px;
+  }
+  .team-card .remaining{font-size:21px; font-weight:600;}
+  .team-card .remaining .cents{font-size:13px; color:var(--ink-muted); font-weight:400;}
+  .team-card .maxbid{text-align:right;}
+  .team-card .maxbid .label{font-size:10px; color:var(--ink-muted); text-transform:uppercase;}
+  .team-card .maxbid .amt{font-size:15px; font-weight:600;}
+  .bar-track{height:6px; border-radius:3px; background:var(--surface-2); margin-top:9px; overflow:hidden;}
+  .bar-fill{height:100%; border-radius:3px; background:var(--accent);}
+  .roster-line{
+    display:flex; justify-content:space-between; margin-top:7px;
+    font-size:11.5px; color:var(--ink-muted);
+  }
+  .state-pill{
+    display:inline-block; font-size:10px; font-weight:600; padding:2px 7px;
+    border-radius:999px; text-transform:uppercase; letter-spacing:0.04em;
+  }
+  .state-good{background:var(--good-bg); color:var(--good);}
+  .state-warn{background:var(--warn-bg); color:var(--warn);}
+  .state-critical{background:var(--critical-bg); color:var(--critical);}
+
+  .team-picks{margin-top:10px; border-top:1px dashed var(--border); padding-top:8px;}
+  .team-picks .pick-row{
+    display:flex; justify-content:space-between; font-size:12.5px; padding:2px 0;
+  }
+  .team-picks .pick-row .p{color:var(--ink);}
+  .team-picks .pick-row .price{color:var(--money); font-weight:600;}
+  .team-picks .empty{font-size:12px; color:var(--ink-muted); font-style:italic;}
+
+  /* ---- Bid sheet ---- */
+  .filter-row{display:flex; gap:8px; margin-bottom:12px; flex-wrap:wrap;}
+  .filter-row select, .filter-row input[type="search"]{
+    padding:7px 10px; border:1px solid var(--border); border-radius:8px;
+    background:var(--surface); color:var(--ink); font-size:13px;
+  }
+  .filter-row input[type="search"]{flex:1; min-width:140px;}
+  .methodology{
+    font-size:12px; color:var(--ink-muted); background:var(--surface-2);
+    border-radius:8px; padding:9px 12px; margin-bottom:12px; line-height:1.5;
+  }
+  table.board-table{width:100%; border-collapse:collapse; font-size:13.5px;}
+  table.board-table th{
+    text-align:left; font-size:10.5px; text-transform:uppercase; letter-spacing:0.05em;
+    color:var(--ink-muted); padding:6px 8px; border-bottom:1px solid var(--border);
+  }
+  table.board-table td{padding:7px 8px; border-bottom:1px solid var(--border);}
+  table.board-table tr.drafted{opacity:0.4;}
+  table.board-table tr.drafted .pname{text-decoration:line-through;}
+  .pos-chip{
+    display:inline-block; font-size:10px; font-weight:600; padding:1px 6px;
+    border-radius:5px; background:var(--surface-2); color:var(--ink-muted);
+  }
+  .range{color:var(--money); font-weight:600;}
+  .table-scroll{overflow-x:auto; -webkit-overflow-scrolling:touch;}
+  .draft-btn{
+    font-size:11.5px; font-weight:600; padding:4px 9px; border-radius:6px;
+    border:1px solid var(--accent); background:transparent; color:var(--accent);
+    cursor:pointer; white-space:nowrap;
+  }
+  .draft-btn:hover{background:var(--accent); color:var(--accent-ink);}
+
+  /* ---- Log pick form ---- */
+  .card{
+    background:var(--surface); border:1px solid var(--border); border-radius:12px;
+    padding:16px; box-shadow:var(--shadow); margin-bottom:16px;
+  }
+  .card h2{font-size:16px; margin-bottom:12px;}
+  .form-grid{display:grid; grid-template-columns:1fr 1fr; gap:10px;}
+  .form-grid .full{grid-column:1/-1;}
+  .field label{
+    display:block; font-size:11px; text-transform:uppercase; letter-spacing:0.05em;
+    color:var(--ink-muted); margin-bottom:4px;
+  }
+  .field input, .field select{
+    width:100%; padding:9px 10px; border:1px solid var(--border); border-radius:8px;
+    background:var(--surface); color:var(--ink); font-size:14px;
+  }
+  .submit-btn{
+    margin-top:12px; width:100%; padding:11px; border-radius:9px; border:none;
+    background:var(--accent); color:var(--accent-ink); font-weight:700; font-size:14px;
+    cursor:pointer;
+  }
+  .submit-btn:active{transform:translateY(1px);}
+  .form-msg{font-size:12.5px; margin-top:8px; min-height:16px;}
+  .form-msg.err{color:var(--critical);}
+  .form-msg.ok{color:var(--good);}
+
+  .log-list{display:flex; flex-direction:column; gap:0;}
+  .log-row{
+    display:flex; justify-content:space-between; align-items:center;
+    padding:9px 2px; border-bottom:1px solid var(--border); font-size:13.5px;
+  }
+  .log-row:last-child{border-bottom:none;}
+  .log-row .who{color:var(--ink-muted); font-size:11.5px;}
+  .log-row .amt{color:var(--money); font-weight:600;}
+  .log-row .undo{
+    background:none; border:none; color:var(--ink-muted); font-size:11px;
+    cursor:pointer; text-decoration:underline; margin-left:8px;
+  }
+  .log-empty{font-size:13px; color:var(--ink-muted); font-style:italic; padding:8px 2px;}
+
+  footer.note{
+    margin-top:28px; font-size:11.5px; color:var(--ink-muted); line-height:1.6;
+    border-top:1px solid var(--border); padding-top:12px;
+  }
+</style>
+
+<header class="top">
+  <div class="top-inner">
+    <div class="eyebrow">All's Well That Ends Wells &middot; 2026 Auction</div>
+    <h1 class="title">Draft Board</h1>
+    <div class="pot-strip">
+      <div class="pot-stat"><span class="label">League pot</span><span class="val money num" id="statPot">$800</span></div>
+      <div class="pot-stat"><span class="label">Spent</span><span class="val num" id="statSpent">$0</span></div>
+      <div class="pot-stat"><span class="label">Players drafted</span><span class="val num" id="statPicks">0</span></div>
+    </div>
+    <nav class="tabs" role="tablist">
+      <button class="tab" role="tab" data-panel="board" aria-selected="true">Board</button>
+      <button class="tab" role="tab" data-panel="sheet" aria-selected="false">Bid Sheet</button>
+      <button class="tab" role="tab" data-panel="log" aria-selected="false">Log Pick</button>
+    </nav>
+  </div>
+</header>
+
+<div class="wrap">
+  <main>
+
+    <!-- BOARD -->
+    <section class="panel active" id="panel-board">
+      <div class="settings-row">
+        <label>Budget/team $<input type="number" id="cfgBudget" value="100" min="1"></label>
+        <label>Roster spots<input type="number" id="cfgRoster" value="16" min="1"></label>
+        <span style="font-size:11.5px;">Max bid = remaining &minus; (roster spots left &minus; 1)</span>
+      </div>
+      <div class="team-grid" id="teamGrid"></div>
+    </section>
+
+    <!-- BID SHEET -->
+    <section class="panel" id="panel-sheet">
+      <div class="methodology">
+        <strong>How these $ are derived:</strong> anchored to published 2026 12-team/$200 PPR auction consensus (RotoWire, Draft Sharks, Fantasy Points, late Aug 2026), then rescaled for your 8-team/$100 format &mdash; elite tiers retain a larger share of value than a flat 50% cut since scarcity concentrates faster in a shallow league. This is a heuristic starting point, not calibrated to your league's real auction history &mdash; treat ranges as anchors and let the room's actual bidding move you off them. Add/edit rows freely; anyone not listed can still be logged from the Log Pick tab.
+      </div>
+      <div class="filter-row">
+        <input type="search" id="sheetSearch" placeholder="Search player&hellip;">
+        <select id="sheetPos">
+          <option value="">All positions</option>
+          <option>QB</option><option>RB</option><option>WR</option><option>TE</option><option>K</option><option>DEF</option>
+        </select>
+        <select id="sheetHide">
+          <option value="all">Show all</option>
+          <option value="undrafted">Undrafted only</option>
+        </select>
+      </div>
+      <div class="table-scroll">
+        <table class="board-table">
+          <thead><tr><th>Player</th><th>Pos</th><th>Tier</th><th>Range</th><th></th></tr></thead>
+          <tbody id="sheetBody"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- LOG PICK -->
+    <section class="panel" id="panel-log">
+      <div class="card">
+        <h2>Log a pick</h2>
+        <form id="pickForm">
+          <div class="form-grid">
+            <div class="field full">
+              <label for="fPlayer">Player</label>
+              <input type="text" id="fPlayer" list="playerList" placeholder="Start typing a name&hellip;" autocomplete="off" required>
+              <datalist id="playerList"></datalist>
+            </div>
+            <div class="field">
+              <label for="fPos">Position</label>
+              <select id="fPos">
+                <option value="">&mdash;</option>
+                <option>QB</option><option>RB</option><option>WR</option><option>TE</option><option>K</option><option>DEF</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="fPrice">Price ($)</label>
+              <input type="number" id="fPrice" min="1" required>
+            </div>
+            <div class="field full">
+              <label for="fTeam">Winning team</label>
+              <select id="fTeam" required></select>
+            </div>
+          </div>
+          <button type="submit" class="submit-btn">Add to draft</button>
+          <div class="form-msg" id="formMsg"></div>
+        </form>
+      </div>
+
+      <div class="card">
+        <h2>Live log</h2>
+        <div class="log-list" id="logList"></div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="note">
+    Autosaves to this browser only (localStorage) &mdash; same device/browser picks it back up on reload, doesn't sync across devices. Owners: Alex, Zach, Steph, Kyle, Hai, OJ, Joe, Sara.
+  </footer>
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  var STORAGE_KEY = "wellsDraft2026";
+
+  var DEFAULT_TEAMS = [
+    {id:"alex",  owner:"Alex",  name:"Purdy Flowers for the King"},
+    {id:"zach",  owner:"Zach",  name:"Dicker's my Kicker"},
+    {id:"steph", owner:"Steph", name:"Swiftielce Babies"},
+    {id:"kyle",  owner:"Kyle",  name:"Leeeeroy Judkins"},
+    {id:"hai",   owner:"Hai",   name:"Tylenol Skattebrain"},
+    {id:"oj",    owner:"OJ",    name:"Old Guys United"},
+    {id:"joe",   owner:"Joe",   name:"Here's to you Mr. Robinson"},
+    {id:"sara",  owner:"Sara",  name:"The Cool Joe's Team"}
+  ];
+
+  var DEFAULT_BOARD = [
+    ["Jahmyr Gibbs","RB","T1",30,38],["Bijan Robinson","RB","T1",30,38],
+    ["Ja'Marr Chase","WR","T1",30,38],["Jonathan Taylor","RB","T1",28,36],
+    ["Puka Nacua","WR","T1",27,35],
+
+    ["Christian McCaffrey","RB","T2",22,29],["James Cook","RB","T2",21,28],
+    ["Jaxon Smith-Njigba","WR","T2",22,29],["Amon-Ra St. Brown","WR","T2",21,28],
+    ["Derrick Henry","RB","T2",20,27],["De'Von Achane","RB","T2",20,27],
+    ["CeeDee Lamb","WR","T2",20,27],
+
+    ["Saquon Barkley","RB","T3",14,21],["Kyren Williams","RB","T3",14,20],
+    ["Chase Brown","RB","T3",13,19],["Brock Bowers","TE","T3",15,21],
+    ["Justin Jefferson","WR","T3",15,21],["Drake London","WR","T3",14,20],
+    ["Rashee Rice","WR","T3",13,19],["Trey McBride","TE","T3",13,19],
+
+    ["Josh Allen","QB","T4",9,13],["Lamar Jackson","QB","T4",8,12],
+    ["Jayden Daniels","QB","T4",8,12],["Nico Collins","WR","T4",9,13],
+    ["Malik Nabers","WR","T4",9,13],["Tyreek Hill","WR","T4",8,12],
+    ["A.J. Brown","WR","T4",8,12],["DK Metcalf","WR","T4",7,11],
+    ["Davante Adams","WR","T4",7,11],["Bucky Irving","RB","T4",8,12],
+    ["Josh Jacobs","RB","T4",8,12],["Breece Hall","RB","T4",7,11],
+    ["George Kittle","TE","T4",8,12],
+
+    ["Joe Burrow","QB","T5",4,7],["Jared Goff","QB","T5",3,6],
+    ["Kyler Murray","QB","T5",3,6],["Anthony Richardson","QB","T5",3,6],
+    ["Xavier Worthy","WR","T5",4,7],["Marvin Harrison Jr.","WR","T5",4,7],
+    ["Terry McLaurin","WR","T5",3,6],["Zay Flowers","WR","T5",3,6],
+    ["Jordan Addison","WR","T5",3,6],["David Montgomery","RB","T5",4,7],
+    ["Aaron Jones","RB","T5",3,6],["Jonathon Brooks","RB","T5",3,6],
+    ["Jordan Mason","RB","T5",3,6],["Sam LaPorta","TE","T5",4,7],
+    ["Mark Andrews","TE","T5",3,6],
+
+    ["Tyjae Spears","RB","T6",1,2],["Jaylen Warren","RB","T6",1,2],
+    ["Rome Odunze","WR","T6",1,2],["Tank Dell","WR","T6",1,2],
+    ["Dalton Kincaid","TE","T6",1,2],["Justin Tucker","K","T6",1,1],
+    ["Harrison Butker","K","T6",1,1],["Brandon Aubrey","K","T6",1,1],
+    ["Broncos DEF","DEF","T6",1,2],["Steelers DEF","DEF","T6",1,2],
+    ["Vikings DEF","DEF","T6",1,2]
+  ];
+
+  function loadState(){
+    var raw;
+    try{ raw = localStorage.getItem(STORAGE_KEY); }catch(e){ raw = null; }
+    if(raw){
+      try{ return JSON.parse(raw); }catch(e){ /* fall through */ }
+    }
+    return {
+      settings:{budget:100, roster:16},
+      teams: DEFAULT_TEAMS,
+      board: DEFAULT_BOARD.map(function(r){
+        return {name:r[0], pos:r[1], tier:r[2], low:r[3], high:r[4], drafted:false};
+      }),
+      picks: []
+    };
+  }
+
+  function saveState(){
+    try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }catch(e){ /* storage unavailable */ }
+  }
+
+  var state = loadState();
+
+  function money(n){
+    n = Math.round(n);
+    return (n<0?"-$":"$") + Math.abs(n);
+  }
+
+  function teamSpent(teamId){
+    return state.picks.filter(function(p){return p.teamId===teamId;})
+      .reduce(function(sum,p){return sum+p.price;},0);
+  }
+
+  function teamPicks(teamId){
+    return state.picks.filter(function(p){return p.teamId===teamId;});
+  }
+
+  function renderStats(){
+    var budget = Number(state.settings.budget)||0;
+    var pot = budget * state.teams.length;
+    var spent = state.picks.reduce(function(s,p){return s+p.price;},0);
+    document.getElementById("statPot").textContent = money(pot);
+    document.getElementById("statSpent").textContent = money(spent);
+    document.getElementById("statPicks").textContent = state.picks.length;
+  }
+
+  function renderTeams(){
+    var budget = Number(state.settings.budget)||0;
+    var roster = Number(state.settings.roster)||1;
+    var grid = document.getElementById("teamGrid");
+    grid.innerHTML = "";
+    state.teams.forEach(function(t){
+      var spent = teamSpent(t.id);
+      var remaining = budget - spent;
+      var filled = teamPicks(t.id).length;
+      var slotsLeft = Math.max(roster - filled, 0);
+      var maxBid = slotsLeft<=1 ? remaining : remaining - (slotsLeft - 1);
+      if(maxBid < 0) maxBid = 0;
+
+      var state_class, state_label;
+      if(maxBid >= 20){ state_class="state-good"; state_label="flexible"; }
+      else if(maxBid >= 8){ state_class="state-warn"; state_label="tight"; }
+      else { state_class="state-critical"; state_label="thin"; }
+
+      var pct = budget>0 ? Math.max(0, Math.min(100, (remaining/budget)*100)) : 0;
+
+      var card = document.createElement("div");
+      card.className = "team-card";
+      var picksHtml = "";
+      var tp = teamPicks(t.id);
+      if(tp.length===0){
+        picksHtml = '<div class="empty">No picks yet</div>';
+      } else {
+        picksHtml = tp.map(function(p){
+          return '<div class="pick-row"><span class="p">'+esc(p.player)+(p.pos?' <span class="pos-chip">'+esc(p.pos)+'</span>':'')+'</span><span class="price num">'+money(p.price)+'</span></div>';
+        }).join("");
+      }
+
+      card.innerHTML =
+        '<div class="owner">'+esc(t.owner)+'</div>'+
+        '<div class="name">'+esc(t.name)+'</div>'+
+        '<div class="figures">'+
+          '<div><div class="remaining num">'+money(remaining)+'</div></div>'+
+          '<div class="maxbid"><div class="label">Max bid</div><div class="amt num">'+money(maxBid)+'</div></div>'+
+        '</div>'+
+        '<div class="bar-track"><div class="bar-fill" style="width:'+pct+'%"></div></div>'+
+        '<div class="roster-line"><span>'+filled+'/'+roster+' roster spots</span><span class="state-pill '+state_class+'">'+state_label+'</span></div>'+
+        '<div class="team-picks">'+picksHtml+'</div>';
+      grid.appendChild(card);
+    });
+  }
+
+  function esc(s){
+    return String(s).replace(/[&<>"']/g, function(c){
+      return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c];
+    });
+  }
+
+  function renderSheet(){
+    var body = document.getElementById("sheetBody");
+    var q = document.getElementById("sheetSearch").value.trim().toLowerCase();
+    var pos = document.getElementById("sheetPos").value;
+    var hide = document.getElementById("sheetHide").value;
+    body.innerHTML = "";
+    state.board.forEach(function(row, idx){
+      if(q && row.name.toLowerCase().indexOf(q)===-1) return;
+      if(pos && row.pos!==pos) return;
+      if(hide==="undrafted" && row.drafted) return;
+      var tr = document.createElement("tr");
+      if(row.drafted) tr.className = "drafted";
+      tr.innerHTML =
+        '<td class="pname">'+esc(row.name)+'</td>'+
+        '<td><span class="pos-chip">'+esc(row.pos)+'</span></td>'+
+        '<td>'+esc(row.tier)+'</td>'+
+        '<td class="range num">'+money(row.low)+'&ndash;'+money(row.high)+'</td>'+
+        '<td>'+(row.drafted?'':'<button type="button" class="draft-btn" data-idx="'+idx+'">Log</button>')+'</td>';
+      body.appendChild(tr);
+    });
+    if(!body.children.length){
+      var tr = document.createElement("tr");
+      tr.innerHTML = '<td colspan="5" style="color:var(--ink-muted); font-style:italic;">No matches.</td>';
+      body.appendChild(tr);
+    }
+  }
+
+  function renderPlayerList(){
+    var dl = document.getElementById("playerList");
+    dl.innerHTML = state.board.filter(function(r){return !r.drafted;})
+      .map(function(r){return '<option value="'+esc(r.name)+'">';}).join("");
+  }
+
+  function renderTeamSelect(){
+    var sel = document.getElementById("fTeam");
+    sel.innerHTML = state.teams.map(function(t){
+      return '<option value="'+t.id+'">'+esc(t.owner)+' &mdash; '+esc(t.name)+'</option>';
+    }).join("");
+  }
+
+  function renderLog(){
+    var list = document.getElementById("logList");
+    if(!state.picks.length){
+      list.innerHTML = '<div class="log-empty">Nothing logged yet. First pick of the night goes here.</div>';
+      return;
+    }
+    var rows = state.picks.slice().reverse().map(function(p){
+      var idx = state.picks.indexOf(p);
+      var team = state.teams.filter(function(t){return t.id===p.teamId;})[0];
+      return '<div class="log-row"><span>'+esc(p.player)+
+        (p.pos?' <span class="pos-chip">'+esc(p.pos)+'</span>':'')+
+        '<span class="who"> &middot; '+esc(team?team.owner:"?")+'</span></span>'+
+        '<span><span class="amt num">'+money(p.price)+'</span>'+
+        '<button type="button" class="undo" data-idx="'+idx+'">undo</button></span></div>';
+    });
+    list.innerHTML = rows.join("");
+  }
+
+  function renderAll(){
+    renderStats();
+    renderTeams();
+    renderSheet();
+    renderPlayerList();
+    renderTeamSelect();
+    renderLog();
+  }
+
+  // Tabs
+  document.querySelectorAll(".tab").forEach(function(btn){
+    btn.addEventListener("click", function(){
+      document.querySelectorAll(".tab").forEach(function(b){b.setAttribute("aria-selected","false");});
+      document.querySelectorAll(".panel").forEach(function(p){p.classList.remove("active");});
+      btn.setAttribute("aria-selected","true");
+      document.getElementById("panel-"+btn.dataset.panel).classList.add("active");
+    });
+  });
+
+  // Settings
+  document.getElementById("cfgBudget").value = state.settings.budget;
+  document.getElementById("cfgRoster").value = state.settings.roster;
+  document.getElementById("cfgBudget").addEventListener("input", function(e){
+    state.settings.budget = Number(e.target.value)||0; saveState(); renderStats(); renderTeams();
+  });
+  document.getElementById("cfgRoster").addEventListener("input", function(e){
+    state.settings.roster = Number(e.target.value)||1; saveState(); renderTeams();
+  });
+
+  // Sheet filters
+  ["sheetSearch","sheetPos","sheetHide"].forEach(function(id){
+    document.getElementById(id).addEventListener("input", renderSheet);
+    document.getElementById(id).addEventListener("change", renderSheet);
+  });
+  document.getElementById("sheetBody").addEventListener("click", function(e){
+    var btn = e.target.closest(".draft-btn");
+    if(!btn) return;
+    var row = state.board[Number(btn.dataset.idx)];
+    document.querySelector('.tab[data-panel="log"]').click();
+    document.getElementById("fPlayer").value = row.name;
+    document.getElementById("fPos").value = row.pos;
+    document.getElementById("fPrice").focus();
+  });
+
+  // Pick form
+  document.getElementById("pickForm").addEventListener("submit", function(e){
+    e.preventDefault();
+    var player = document.getElementById("fPlayer").value.trim();
+    var pos = document.getElementById("fPos").value;
+    var price = Number(document.getElementById("fPrice").value);
+    var teamId = document.getElementById("fTeam").value;
+    var msg = document.getElementById("formMsg");
+
+    if(!player || !price || price<1 || !teamId){
+      msg.className = "form-msg err";
+      msg.textContent = "Player, price, and team are all required.";
+      return;
+    }
+    var budget = Number(state.settings.budget)||0;
+    var remaining = budget - teamSpent(teamId);
+    if(price > remaining){
+      msg.className = "form-msg err";
+      msg.textContent = "That's over "+ (state.teams.filter(function(t){return t.id===teamId;})[0]||{}).owner +"'s remaining budget ("+money(remaining)+"). Logged anyway if you hit submit again — double check first.";
+      // allow override on second submit of identical values by falling through only if user resubmits; simplest: just block once.
+      if(e.target.dataset.confirmOverride !== (player+price+teamId)){
+        e.target.dataset.confirmOverride = player+price+teamId;
+        return;
+      }
+    }
+
+    state.picks.push({teamId:teamId, player:player, pos:pos, price:price, ts:Date.now()});
+    var boardRow = state.board.filter(function(r){return r.name.toLowerCase()===player.toLowerCase();})[0];
+    if(boardRow) boardRow.drafted = true;
+
+    saveState();
+    renderAll();
+
+    msg.className = "form-msg ok";
+    msg.textContent = "Logged: "+player+" to "+(state.teams.filter(function(t){return t.id===teamId;})[0]||{}).owner+" for "+money(price)+".";
+    document.getElementById("pickForm").reset();
+    document.getElementById("fTeam").value = teamId;
+  });
+
+  document.getElementById("logList").addEventListener("click", function(e){
+    var btn = e.target.closest(".undo");
+    if(!btn) return;
+    var idx = Number(btn.dataset.idx);
+    var removed = state.picks[idx];
+    state.picks.splice(idx,1);
+    if(removed){
+      var boardRow = state.board.filter(function(r){return r.name.toLowerCase()===removed.player.toLowerCase();})[0];
+      if(boardRow) boardRow.drafted = false;
+    }
+    saveState();
+    renderAll();
+  });
+
+  renderAll();
+})();
+</script>
