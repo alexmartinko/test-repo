@@ -23,6 +23,13 @@ sourced from email only. Anything not directly stated in an email is marked
   time (8:30pm) is the real plan; Yahoo's in-system draft time is the thing
   that's wrong and worth fixing before tomorrow so it doesn't confuse anyone
   checking Yahoo directly (and so Yahoo doesn't auto-start anything at 8:30am).
+- **Buy-in vs. auction budget — two different numbers**: the **$100 buy-in**
+  is real cash into the league pot (confirmed by email, see below). The
+  **auction draft budget is $200/team** in fake Yahoo dollars used for
+  bidding — per Alex directly, not found in any email (Yahoo's stock
+  default is $200 regardless of the real buy-in, so this tracks). The draft
+  board tool uses $200/team; don't confuse it with the $100 real-money buy-in
+  below.
 - **Buy-in**: $100/team, confirmed unchanged for 2026 (Alex considered a raise
   to $150, group pushback, decision was to hold at $100).
 - **New 2026 rule**: $5 into the pot for every starting roster spot filled by

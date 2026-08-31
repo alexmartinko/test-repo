@@ -1,7 +1,9 @@
 # Wells FF Draft Agent
 
-Everything built so far for Alex's "All's Well That Ends Wells" 8-team, $100
-Yahoo auction league — league knowledge + a live draft-day tool. Draft is
+Everything built so far for Alex's "All's Well That Ends Wells" 8-team Yahoo
+auction league ($100 real-money buy-in, $200/team auction budget — see
+`league-notes.md`, these are two different numbers) — league knowledge + a
+live draft-day tool. Draft is
 Tuesday Sept 1, 2026, 8:30pm PDT (see `league-notes.md` for a Yahoo time
 mismatch that needs checking).
 
@@ -44,11 +46,12 @@ values to this specific league's bidding tendencies.
 
 What's in `draft-board.html` instead: current (late Aug 2026) 12-team/$200
 PPR auction consensus pulled via web search (RotoWire, Draft Sharks, Fantasy
-Points), rescaled to 8-team/$100. The rescale isn't a flat 50% cut — shallower
-leagues concentrate value at the top faster than they compress it at the
-bottom, so elite tiers were rescaled more gently than mid/replacement tiers.
-This is a **heuristic, not a calibration** — treat the ranges in the Bid Sheet
-tab as a starting anchor and let the room's real bidding move you off them.
+Points), adjusted for 8-team/$200 (same budget per team as the source data,
+just fewer teams bidding — elite/strong-starter tiers nudged above the
+12-team consensus, streamer/bench tiers compressed down, since replacement-
+level talent is relatively more plentiful across only 8 rosters). This is a
+**heuristic, not a calibration** — treat the ranges in the Bid Sheet tab as a
+starting anchor and let the room's real bidding move you off them.
 
 **To get an actually-calibrated sheet**: either fix Drive access so the past
 draft sheets can be read, or paste/share the historical auction prices

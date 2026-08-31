@@ -259,10 +259,10 @@
 
 <header class="top">
   <div class="top-inner">
-    <div class="eyebrow">All's Well That Ends Wells &middot; 2026 Auction</div>
+    <div class="eyebrow">All's Well That Ends Wells &middot; 2026 Auction ($200 budget)</div>
     <h1 class="title">Draft Board</h1>
     <div class="pot-strip">
-      <div class="pot-stat"><span class="label">League pot</span><span class="val money num" id="statPot">$800</span></div>
+      <div class="pot-stat"><span class="label">Auction $ in play</span><span class="val money num" id="statPot">$1600</span></div>
       <div class="pot-stat"><span class="label">Spent</span><span class="val num" id="statSpent">$0</span></div>
       <div class="pot-stat"><span class="label">Players drafted</span><span class="val num" id="statPicks">0</span></div>
     </div>
@@ -280,7 +280,7 @@
     <!-- BOARD -->
     <section class="panel active" id="panel-board">
       <div class="settings-row">
-        <label>Budget/team $<input type="number" id="cfgBudget" value="100" min="1"></label>
+        <label>Budget/team $<input type="number" id="cfgBudget" value="200" min="1"></label>
         <label>Roster spots<input type="number" id="cfgRoster" value="16" min="1"></label>
         <span style="font-size:11.5px;">Max bid = remaining &minus; (roster spots left &minus; 1)</span>
       </div>
@@ -290,7 +290,7 @@
     <!-- BID SHEET -->
     <section class="panel" id="panel-sheet">
       <div class="methodology">
-        <strong>How these $ are derived:</strong> anchored to published 2026 12-team/$200 PPR auction consensus (RotoWire, Draft Sharks, Fantasy Points, late Aug 2026), then rescaled for your 8-team/$100 format &mdash; elite tiers retain a larger share of value than a flat 50% cut since scarcity concentrates faster in a shallow league. This is a heuristic starting point, not calibrated to your league's real auction history &mdash; treat ranges as anchors and let the room's actual bidding move you off them. Add/edit rows freely; anyone not listed can still be logged from the Log Pick tab.
+        <strong>How these $ are derived:</strong> anchored to published 2026 12-team/$200 PPR auction consensus (RotoWire, Draft Sharks, Fantasy Points, late Aug 2026). Your league is 8-team/$200 &mdash; same budget per team, fewer teams bidding &mdash; so elite/strong-starter tiers were nudged a bit above the 12-team consensus (less competition doesn't mean less scarcity) while streamer/bench tiers were compressed down (replacement-level talent is more plentiful relative to only 8 rosters). This is a heuristic starting point, not calibrated to your league's real auction history &mdash; treat ranges as anchors and let the room's actual bidding move you off them. Add/edit rows freely; anyone not listed can still be logged from the Log Pick tab.
       </div>
       <div class="filter-row">
         <input type="search" id="sheetSearch" placeholder="Search player&hellip;">
@@ -374,43 +374,43 @@
   ];
 
   var DEFAULT_BOARD = [
-    ["Jahmyr Gibbs","RB","T1",30,38],["Bijan Robinson","RB","T1",30,38],
-    ["Ja'Marr Chase","WR","T1",30,38],["Jonathan Taylor","RB","T1",28,36],
-    ["Puka Nacua","WR","T1",27,35],
+    ["Jahmyr Gibbs","RB","T1",58,68],["Bijan Robinson","RB","T1",54,64],
+    ["Ja'Marr Chase","WR","T1",52,62],["Jonathan Taylor","RB","T1",50,60],
+    ["Puka Nacua","WR","T1",46,56],
 
-    ["Christian McCaffrey","RB","T2",22,29],["James Cook","RB","T2",21,28],
-    ["Jaxon Smith-Njigba","WR","T2",22,29],["Amon-Ra St. Brown","WR","T2",21,28],
-    ["Derrick Henry","RB","T2",20,27],["De'Von Achane","RB","T2",20,27],
-    ["CeeDee Lamb","WR","T2",20,27],
+    ["Christian McCaffrey","RB","T2",42,50],["James Cook","RB","T2",40,48],
+    ["Jaxon Smith-Njigba","WR","T2",39,47],["Amon-Ra St. Brown","WR","T2",37,45],
+    ["Derrick Henry","RB","T2",35,43],["De'Von Achane","RB","T2",35,43],
+    ["CeeDee Lamb","WR","T2",33,41],
 
-    ["Saquon Barkley","RB","T3",14,21],["Kyren Williams","RB","T3",14,20],
-    ["Chase Brown","RB","T3",13,19],["Brock Bowers","TE","T3",15,21],
-    ["Justin Jefferson","WR","T3",15,21],["Drake London","WR","T3",14,20],
-    ["Rashee Rice","WR","T3",13,19],["Trey McBride","TE","T3",13,19],
+    ["Saquon Barkley","RB","T3",27,35],["Justin Jefferson","WR","T3",29,37],
+    ["Brock Bowers","TE","T3",26,34],["Kyren Williams","RB","T3",23,30],
+    ["Chase Brown","RB","T3",22,29],["Drake London","WR","T3",22,29],
+    ["Trey McBride","TE","T3",22,29],["Rashee Rice","WR","T3",20,27],
 
-    ["Josh Allen","QB","T4",9,13],["Lamar Jackson","QB","T4",8,12],
-    ["Jayden Daniels","QB","T4",8,12],["Nico Collins","WR","T4",9,13],
-    ["Malik Nabers","WR","T4",9,13],["Tyreek Hill","WR","T4",8,12],
-    ["A.J. Brown","WR","T4",8,12],["DK Metcalf","WR","T4",7,11],
-    ["Davante Adams","WR","T4",7,11],["Bucky Irving","RB","T4",8,12],
-    ["Josh Jacobs","RB","T4",8,12],["Breece Hall","RB","T4",7,11],
-    ["George Kittle","TE","T4",8,12],
+    ["Nico Collins","WR","T4",15,21],["Malik Nabers","WR","T4",15,21],
+    ["George Kittle","TE","T4",14,20],["Bucky Irving","RB","T4",13,19],
+    ["Josh Allen","QB","T4",13,19],["Josh Jacobs","RB","T4",12,18],
+    ["Tyreek Hill","WR","T4",12,18],["A.J. Brown","WR","T4",12,18],
+    ["Breece Hall","RB","T4",11,17],["Lamar Jackson","QB","T4",11,16],
+    ["DK Metcalf","WR","T4",10,15],["Davante Adams","WR","T4",10,15],
+    ["Jayden Daniels","QB","T4",10,15],
 
-    ["Joe Burrow","QB","T5",4,7],["Jared Goff","QB","T5",3,6],
-    ["Kyler Murray","QB","T5",3,6],["Anthony Richardson","QB","T5",3,6],
-    ["Xavier Worthy","WR","T5",4,7],["Marvin Harrison Jr.","WR","T5",4,7],
-    ["Terry McLaurin","WR","T5",3,6],["Zay Flowers","WR","T5",3,6],
-    ["Jordan Addison","WR","T5",3,6],["David Montgomery","RB","T5",4,7],
-    ["Aaron Jones","RB","T5",3,6],["Jonathon Brooks","RB","T5",3,6],
-    ["Jordan Mason","RB","T5",3,6],["Sam LaPorta","TE","T5",4,7],
-    ["Mark Andrews","TE","T5",3,6],
+    ["Xavier Worthy","WR","T5",6,10],["Marvin Harrison Jr.","WR","T5",6,10],
+    ["Sam LaPorta","TE","T5",6,10],["Joe Burrow","QB","T5",6,9],
+    ["Terry McLaurin","WR","T5",5,8],["David Montgomery","RB","T5",5,8],
+    ["Zay Flowers","WR","T5",4,7],["Jordan Addison","WR","T5",4,7],
+    ["Aaron Jones","RB","T5",4,7],["Jonathon Brooks","RB","T5",4,7],
+    ["Jordan Mason","RB","T5",4,7],["Mark Andrews","TE","T5",4,7],
+    ["Jared Goff","QB","T5",3,6],["Kyler Murray","QB","T5",3,6],
+    ["Anthony Richardson","QB","T5",3,6],
 
-    ["Tyjae Spears","RB","T6",1,2],["Jaylen Warren","RB","T6",1,2],
-    ["Rome Odunze","WR","T6",1,2],["Tank Dell","WR","T6",1,2],
-    ["Dalton Kincaid","TE","T6",1,2],["Justin Tucker","K","T6",1,1],
-    ["Harrison Butker","K","T6",1,1],["Brandon Aubrey","K","T6",1,1],
-    ["Broncos DEF","DEF","T6",1,2],["Steelers DEF","DEF","T6",1,2],
-    ["Vikings DEF","DEF","T6",1,2]
+    ["Tyjae Spears","RB","T6",1,3],["Jaylen Warren","RB","T6",1,3],
+    ["Rome Odunze","WR","T6",1,3],["Tank Dell","WR","T6",1,2],
+    ["Dalton Kincaid","TE","T6",1,3],["Justin Tucker","K","T6",1,2],
+    ["Harrison Butker","K","T6",1,2],["Brandon Aubrey","K","T6",1,2],
+    ["Broncos DEF","DEF","T6",1,3],["Steelers DEF","DEF","T6",1,3],
+    ["Vikings DEF","DEF","T6",1,3]
   ];
 
   function loadState(){
@@ -420,7 +420,7 @@
       try{ return JSON.parse(raw); }catch(e){ /* fall through */ }
     }
     return {
-      settings:{budget:100, roster:16},
+      settings:{budget:200, roster:16},
       teams: DEFAULT_TEAMS,
       board: DEFAULT_BOARD.map(function(r){
         return {name:r[0], pos:r[1], tier:r[2], low:r[3], high:r[4], drafted:false};
