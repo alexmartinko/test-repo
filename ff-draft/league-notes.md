@@ -15,10 +15,14 @@ sourced from email only. Anything not directly stated in an email is marked
   scheduling thread), $100 buy-in per team. Draft type in Yahoo is set to
   "offline" — the league drafts live over Zoom and picks get entered into
   Yahoo afterward/alongside, not run through Yahoo's live draft room.
-- **2026 draft**: Tuesday, Sept 1, 2026, 8:30pm PDT, over Zoom. **Yahoo's own
-  reminder emails have it at 8:30am** — Kyle flagged this mismatch the day
-  before and it was never resolved in the thread. Worth checking/fixing in
-  Yahoo's draft settings before tomorrow.
+- **2026 draft**: Tuesday, Sept 1, 2026, **8:30pm–10:00pm PDT**, over Zoom —
+  confirmed directly against Alex's Google Calendar event ("Wells Fantasy
+  Football Draft," last updated Aug 31 16:59 UTC), which everyone accepted.
+  **Yahoo's own reminder emails have it at 8:30am** — Kyle flagged this
+  mismatch and it was never addressed in the email thread. The calendar/Zoom
+  time (8:30pm) is the real plan; Yahoo's in-system draft time is the thing
+  that's wrong and worth fixing before tomorrow so it doesn't confuse anyone
+  checking Yahoo directly (and so Yahoo doesn't auto-start anything at 8:30am).
 - **Buy-in**: $100/team, confirmed unchanged for 2026 (Alex considered a raise
   to $150, group pushback, decision was to hold at $100).
 - **New 2026 rule**: $5 into the pot for every starting roster spot filled by
@@ -82,8 +86,10 @@ count down.
 
 ## Open threads worth resolving before draft night
 
-1. **8:30am vs 8:30pm mismatch** in Yahoo's system — Kyle caught this Aug 31,
-   never confirmed fixed.
+1. **Yahoo's draft-time setting still says 8:30am** (confirmed wrong — the
+   real draft is 8:30pm–10pm PDT per the Zoom calendar invite everyone
+   accepted). Kyle caught this Aug 31; worth fixing in Yahoo before tomorrow
+   so the league site and reminders match reality.
 2. **Snake vs. auction** — Steph asked "Anyone open to doing a snake draft
    this year?" in the final scheduling thread; no reply on record. Joe's
    "speed up the clock... time to bid" reply (sent before Steph's question)
