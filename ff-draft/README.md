@@ -75,11 +75,12 @@ search/read tools weren't available last session).
    is still wrong and worth fixing in Yahoo so it stops confusing anyone.
 2. Confirm **payout split percentages** ("usual splits" — never stated in a
    found email).
-3. Confirm **roster/scoring settings** — the tool defaults to a 16-spot
-   roster, editable in the Board tab. Budget is confirmed $200/team.
-   Conflicting signals: 2017 predecessor league had QB/WR/WR/RB/RB/TE/FLEX and
-   **no K/DEF** (9 years old); ESPN's 2026 default build *does* carry K + D/ST
-   (15 spots). Neither is this league's confirmed 2026 setup.
+3. **Scoring: confirmed** (Yahoo screenshots) — PPR + stacking yardage
+   bonuses (+5 at 300/400/500 pass, 100/200/300 rush, 100/200/300 rec). Tilts
+   toward ceiling / elite + dual-threat QB; see `value-sources.md`.
+   **Roster: still unconfirmed from Yahoo**, but Alex's 2020–2024 analysis
+   sheets all use QB/RB/RB/WR/WR/TE/FLEX/FLEX/D/K + 7 bench = 17. Tool still
+   defaults to 16 — bump to 17 once confirmed. Budget confirmed $200/team.
 4. Confirm **snake vs. auction** — last clear signal says auction, but never
    explicitly re-confirmed after Steph raised switching to snake.
 5. ~~The **$0-flagged players**~~ — addressed in `value-sources.md`: ESPN

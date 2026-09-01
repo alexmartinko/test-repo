@@ -75,6 +75,33 @@ If the room bids these RBs toward the ESPN numbers, that is the market
 correcting FantasyPros' 8-team compression — don't treat it as other owners
 overpaying.
 
+## League scoring bonuses — how they tilt values
+
+Confirmed Sept 1: stacking yardage bonuses (+5 at each of 300/400/500 pass,
+100/200/300 rush, 100/200/300 rec). Neither FantasyPros nor ESPN bakes these
+in, so adjust at the table:
+
+- **Pay up for elite QB, especially dual-threat.** A 300+ yd passing game is
+  common for the top tier and worth +5 to +15; a rushing QB can also clip the
+  +5 rushing bonus. Josh Allen (pass **and** rush bonus equity), Lamar, Jayden
+  Daniels, Burrow, Mahomes gain the most. FantasyPros already has Allen at $31
+  (vs ESPN $22) — in *this* scoring that's fair, maybe light. Expect the QB
+  tier to clear above sheet value; be willing to.
+- **Favor ceiling over floor at RB/WR.** The 100-yд bonus (+5 on a game
+  that's already ~10 pts base) rewards boom weeks and clear alphas, not
+  steady-volume PPR grinders. Between two similar-priced players, take the
+  explosive one / the undisputed target hog.
+- **Reinforces RB-heavy and Studs.** Bell-cow backs who hit 100+ get the
+  bonus; committee backs don't. Widens the gap between true RB1s and the
+  replacement pool — which is already wide in an 8-team league.
+- **TE is mostly untouched** (few TEs hit 100 rec yds regularly) — stays a
+  punt unless you land McBride/Bowers.
+- **Cheap dual-threat QB2** (Fields, Daniels-type in a good matchup) is a
+  live streaming edge for the rushing bonus.
+
+Net: not league-warping, but a real thematic tilt toward explosiveness and
+elite QB. Treat sheet QB prices as a floor.
+
 ## Still would sharpen this
 
 The historical Wells draft sheets (Google Drive) remain the missing piece —

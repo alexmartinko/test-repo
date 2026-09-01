@@ -38,14 +38,23 @@ sourced from email only. Anything not directly stated in an email is marked
   distributed on the usual splits" — the actual payout split percentages
   were never stated in any thread found. **Unconfirmed** — needs a direct
   answer from Alex or a look at the Yahoo league's payout settings.
-- **Roster/scoring settings** (starters, PPR type, flex spots, FAAB waiver
-  details): **unconfirmed**. No league-settings email for this specific
-  league surfaced in the searches run. The draft board defaults to a 16-man
-  roster as a placeholder — editable in the tool. Two conflicting outside
-  reference points, neither this league: 2017 predecessor ran no K/DEF (see
-  below); ESPN's 2026 default PPR build (the cheat sheet Alex pulled) is
-  1 QB / 2 RB / 2 WR / 1 TE / 1 FLEX / 1 K / 1 D/ST / 7 bench = 15, *with*
-  K and D/ST.
+- **Roster settings** (starter slots, flex count, bench, FAAB): still
+  **unconfirmed** from Yahoo directly. Best evidence is Alex's own 2020–2024
+  "FF Draft Analysis" sheets (Google Drive → Fantasy Football/), all built for
+  this league on **QB / RB / RB / WR / WR / TE / FLEX / FLEX / D / K = 10
+  starters + 7 bench = 17**, $180 starter / $20 bench convention. The 2017
+  predecessor's no-K/DEF lineup is superseded by this. Draft-board tool still
+  defaults to 16 — bump to 17 once confirmed.
+- **Scoring — CONFIRMED custom (Yahoo settings screenshots, Sept 1 2026)**:
+  PPR (1 per reception) **plus stacking yardage bonuses**, all toggled on:
+  - Passing yards: +5 at 300, +5 at 400, +5 at 500 (cumulative — a 500-yd
+    game = +15 on top of base).
+  - Rushing yards: +5 at 100, +5 at 200, +5 at 300 (cumulative).
+  - Receiving yards: +5 at 100, +5 at 200, +5 at 300 (cumulative).
+  Base rates not shown on that screen but assume Yahoo standard (1/25 pass,
+  1/10 rush-rec, 4 pass TD, 6 rush/rec TD). These bonuses reward ceiling /
+  explosiveness and elite + dual-threat QBs — see the draft implications in
+  `value-sources.md`. FantasyPros/ESPN values do **not** bake these in.
 
 ## Roster shape — historical signal (not confirmed current)
 
