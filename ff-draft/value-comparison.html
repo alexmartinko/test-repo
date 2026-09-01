@@ -1,0 +1,235 @@
+<title>Auction Value Check</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+  .viz-root{
+    color-scheme: light;
+    --surface-1:      #fcfcfb;
+    --surface-2:      #f2f1ed;
+    --text-primary:   #0b0b0b;
+    --text-secondary: #52514e;
+    --text-muted:     #898781;
+    --grid:           #e1e0d9;
+    --baseline:       #c3c2b7;
+    --border:         rgba(11,11,11,0.10);
+    --series-1:       #2a78d6;
+    --critical:       #d03b3b;
+    --critical-bg:    #f7e3e2;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]) .viz-root{
+      color-scheme: dark;
+      --surface-1:      #1a1a19;
+      --surface-2:      #232322;
+      --text-primary:   #ffffff;
+      --text-secondary: #c3c2b7;
+      --text-muted:     #898781;
+      --grid:           #2c2c2a;
+      --baseline:       #383835;
+      --border:         rgba(255,255,255,0.10);
+      --series-1:       #3987e5;
+      --critical:       #d03b3b;
+      --critical-bg:    #3a201f;
+    }
+  }
+  :root[data-theme="dark"] .viz-root{
+    color-scheme: dark;
+    --surface-1:      #1a1a19;
+    --surface-2:      #232322;
+    --text-primary:   #ffffff;
+    --text-secondary: #c3c2b7;
+    --text-muted:     #898781;
+    --grid:           #2c2c2a;
+    --baseline:       #383835;
+    --border:         rgba(255,255,255,0.10);
+    --series-1:       #3987e5;
+    --critical:       #d03b3b;
+    --critical-bg:    #3a201f;
+  }
+
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{background:var(--surface-1);}
+  .viz-root{
+    font-family:"IBM Plex Sans", system-ui, -apple-system, sans-serif;
+    color:var(--text-primary);
+    background:var(--surface-1);
+    max-width:900px; margin:0 auto; padding:24px 20px 56px;
+  }
+  .num{font-family:"IBM Plex Mono", ui-monospace, monospace; font-variant-numeric:tabular-nums;}
+  h1{font-size:20px; margin:0 0 4px; font-weight:700;}
+  .sub{font-size:13px; color:var(--text-secondary); line-height:1.55; max-width:640px;}
+
+  .card{
+    background:var(--surface-1); border:1px solid var(--border); border-radius:12px;
+    padding:18px; margin-top:20px;
+  }
+  .card h2{font-size:14px; margin:0 0 4px;}
+  .card .desc{font-size:12px; color:var(--text-secondary); margin-bottom:14px;}
+
+  .legend{display:flex; gap:16px; margin-bottom:10px; font-size:12px; color:var(--text-secondary);}
+  .legend .item{display:flex; align-items:center; gap:6px;}
+  .swatch{width:9px; height:9px; border-radius:50%;}
+  .swatch.normal{background:var(--series-1);}
+  .swatch.flag{background:var(--critical);}
+
+  svg{width:100%; height:auto; display:block;}
+  .axis-label{fill:var(--text-muted); font-size:10.5px;}
+  .grid-line{stroke:var(--grid); stroke-width:1;}
+  .identity-line{stroke:var(--baseline); stroke-width:1.5; stroke-dasharray:4 4;}
+  .pt{stroke:var(--surface-1); stroke-width:1.5; cursor:pointer;}
+  .pt.normal{fill:var(--series-1);}
+  .pt.flag{fill:var(--critical);}
+  .pt-label{font-size:9.5px; fill:var(--text-secondary); pointer-events:none;}
+
+  #tooltip{
+    position:fixed; pointer-events:none; z-index:50;
+    background:var(--surface-2); border:1px solid var(--border); border-radius:8px;
+    padding:8px 10px; font-size:12px; line-height:1.5; box-shadow:0 4px 14px rgba(0,0,0,0.12);
+    display:none; max-width:220px;
+  }
+  #tooltip .t-name{font-weight:600;}
+  #tooltip .t-row{color:var(--text-secondary); display:flex; justify-content:space-between; gap:10px;}
+
+  .flag-list{font-size:12.5px; line-height:1.7; margin-top:2px;}
+  .flag-list .fname{font-weight:600;}
+  .flag-list .fmeta{color:var(--text-secondary);}
+
+  table{width:100%; border-collapse:collapse; font-size:12.5px; margin-top:4px;}
+  th{
+    text-align:left; font-size:10px; text-transform:uppercase; letter-spacing:0.04em;
+    color:var(--text-muted); padding:5px 8px; border-bottom:1px solid var(--grid);
+  }
+  td{padding:5px 8px; border-bottom:1px solid var(--grid);}
+  tr.flag td{background:var(--critical-bg);}
+  .table-scroll{overflow-x:auto; max-height:360px; overflow-y:auto;}
+  details summary{cursor:pointer; font-size:12.5px; color:var(--series-1); font-weight:600; margin-top:14px;}
+</style>
+
+<div class="viz-root">
+  <h1>Auction Value Check</h1>
+  <p class="sub">51 players overlap between the earlier rescaled estimate (12-team/$200 consensus, adjusted for 8-team/$200) and the FantasyPros list Alex pasted. Plotting both against each other to see how close the guess landed &mdash; and to catch anything in the real data worth double-checking before trusting it at the table.</p>
+
+  <div class="card">
+    <h2>Estimate vs. real data</h2>
+    <div class="desc">x = earlier rescaled estimate (midpoint of its $ range) &middot; y = FantasyPros value. Points above the dashed line are worth more than guessed; below, worth less.</div>
+    <div class="legend">
+      <span class="item"><span class="swatch normal"></span>Normal</span>
+      <span class="item"><span class="swatch flag"></span>Flagged &mdash; had real value before, now $0</span>
+    </div>
+    <svg id="chart" viewBox="0 0 640 640" role="img" aria-label="Scatter plot comparing earlier estimated auction values to FantasyPros values"></svg>
+  </div>
+
+  <div class="card">
+    <h2>7 worth a second look</h2>
+    <div class="desc">These were mid-teens-to-single-digit rostered players in every industry source I pulled, but sit at exactly $0 in the pasted list. Could be a real value crash (depth-chart change), could be an export quirk (e.g. flagged as already-kept in Alex's Yahoo league) &mdash; worth a gut check before treating $0 as gospel on any of them.</div>
+    <div class="flag-list" id="flagList"></div>
+  </div>
+
+  <details>
+    <summary>View full comparison table (51 players)</summary>
+    <div class="table-scroll">
+      <table id="fullTable">
+        <thead><tr><th>Player</th><th>Pos</th><th>Earlier est.</th><th>FantasyPros</th><th>Diff</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </details>
+
+  <div id="tooltip"></div>
+</div>
+
+<script>
+(function(){
+  "use strict";
+  var DATA = [{"name": "Puka Nacua", "pos": "WR", "old_low": 46, "old_high": 56, "old_mid": 51.0, "new_value": 62, "new_rank": 1}, {"name": "Jahmyr Gibbs", "pos": "RB", "old_low": 58, "old_high": 68, "old_mid": 63.0, "new_value": 61, "new_rank": 2}, {"name": "Ja'Marr Chase", "pos": "WR", "old_low": 52, "old_high": 62, "old_mid": 57.0, "new_value": 60, "new_rank": 3}, {"name": "Bijan Robinson", "pos": "RB", "old_low": 54, "old_high": 64, "old_mid": 59.0, "new_value": 56, "new_rank": 4}, {"name": "Jaxon Smith-Njigba", "pos": "WR", "old_low": 39, "old_high": 47, "old_mid": 43.0, "new_value": 56, "new_rank": 5}, {"name": "Amon-Ra St. Brown", "pos": "WR", "old_low": 37, "old_high": 45, "old_mid": 41.0, "new_value": 54, "new_rank": 6}, {"name": "Christian McCaffrey", "pos": "RB", "old_low": 42, "old_high": 50, "old_mid": 46.0, "new_value": 48, "new_rank": 7}, {"name": "Jonathan Taylor", "pos": "RB", "old_low": 50, "old_high": 60, "old_mid": 55.0, "new_value": 40, "new_rank": 8}, {"name": "Drake London", "pos": "WR", "old_low": 22, "old_high": 29, "old_mid": 25.5, "new_value": 36, "new_rank": 9}, {"name": "CeeDee Lamb", "pos": "WR", "old_low": 33, "old_high": 41, "old_mid": 37.0, "new_value": 35, "new_rank": 11}, {"name": "Justin Jefferson", "pos": "WR", "old_low": 29, "old_high": 37, "old_mid": 33.0, "new_value": 35, "new_rank": 10}, {"name": "Trey McBride", "pos": "TE", "old_low": 22, "old_high": 29, "old_mid": 25.5, "new_value": 35, "new_rank": 12}, {"name": "De'Von Achane", "pos": "RB", "old_low": 35, "old_high": 43, "old_mid": 39.0, "new_value": 34, "new_rank": 13}, {"name": "Rashee Rice", "pos": "WR", "old_low": 20, "old_high": 27, "old_mid": 23.5, "new_value": 33, "new_rank": 14}, {"name": "Josh Allen", "pos": "QB", "old_low": 13, "old_high": 19, "old_mid": 16.0, "new_value": 31, "new_rank": 15}, {"name": "Brock Bowers", "pos": "TE", "old_low": 26, "old_high": 34, "old_mid": 30.0, "new_value": 30, "new_rank": 17}, {"name": "Chase Brown", "pos": "RB", "old_low": 22, "old_high": 29, "old_mid": 25.5, "new_value": 29, "new_rank": 18}, {"name": "Derrick Henry", "pos": "RB", "old_low": 35, "old_high": 43, "old_mid": 39.0, "new_value": 28, "new_rank": 19}, {"name": "A.J. Brown", "pos": "WR", "old_low": 12, "old_high": 18, "old_mid": 15.0, "new_value": 28, "new_rank": 20}, {"name": "Nico Collins", "pos": "WR", "old_low": 15, "old_high": 21, "old_mid": 18.0, "new_value": 25, "new_rank": 23}, {"name": "Saquon Barkley", "pos": "RB", "old_low": 27, "old_high": 35, "old_mid": 31.0, "new_value": 24, "new_rank": 24}, {"name": "Malik Nabers", "pos": "WR", "old_low": 15, "old_high": 21, "old_mid": 18.0, "new_value": 22, "new_rank": 29}, {"name": "Zay Flowers", "pos": "WR", "old_low": 4, "old_high": 7, "old_mid": 5.5, "new_value": 22, "new_rank": 28}, {"name": "Breece Hall", "pos": "RB", "old_low": 11, "old_high": 17, "old_mid": 14.0, "new_value": 18, "new_rank": 34}, {"name": "Kyren Williams", "pos": "RB", "old_low": 23, "old_high": 30, "old_mid": 26.5, "new_value": 15, "new_rank": 38}, {"name": "Davante Adams", "pos": "WR", "old_low": 10, "old_high": 15, "old_mid": 12.5, "new_value": 14, "new_rank": 41}, {"name": "Bucky Irving", "pos": "RB", "old_low": 13, "old_high": 19, "old_mid": 16.0, "new_value": 11, "new_rank": 47}, {"name": "Lamar Jackson", "pos": "QB", "old_low": 11, "old_high": 16, "old_mid": 13.5, "new_value": 10, "new_rank": 49}, {"name": "Jayden Daniels", "pos": "QB", "old_low": 10, "old_high": 15, "old_mid": 12.5, "new_value": 9, "new_rank": 51}, {"name": "Terry McLaurin", "pos": "WR", "old_low": 5, "old_high": 8, "old_mid": 6.5, "new_value": 9, "new_rank": 54}, {"name": "Rome Odunze", "pos": "WR", "old_low": 1, "old_high": 3, "old_mid": 2.0, "new_value": 8, "new_rank": 59}, {"name": "George Kittle", "pos": "TE", "old_low": 14, "old_high": 20, "old_mid": 17.0, "new_value": 7, "new_rank": 61}, {"name": "Marvin Harrison Jr.", "pos": "WR", "old_low": 6, "old_high": 10, "old_mid": 8.0, "new_value": 6, "new_rank": 64}, {"name": "Sam LaPorta", "pos": "TE", "old_low": 6, "old_high": 10, "old_mid": 8.0, "new_value": 6, "new_rank": 66}, {"name": "David Montgomery", "pos": "RB", "old_low": 5, "old_high": 8, "old_mid": 6.5, "new_value": 6, "new_rank": 63}, {"name": "DK Metcalf", "pos": "WR", "old_low": 10, "old_high": 15, "old_mid": 12.5, "new_value": 5, "new_rank": 72}, {"name": "Jaylen Warren", "pos": "RB", "old_low": 1, "old_high": 3, "old_mid": 2.0, "new_value": 5, "new_rank": 67}, {"name": "Joe Burrow", "pos": "QB", "old_low": 6, "old_high": 9, "old_mid": 7.5, "new_value": 4, "new_rank": 75}, {"name": "Jonathon Brooks", "pos": "RB", "old_low": 4, "old_high": 7, "old_mid": 5.5, "new_value": 2, "new_rank": 88}, {"name": "Brandon Aubrey", "pos": "K", "old_low": 1, "old_high": 2, "old_mid": 1.5, "new_value": 1, "new_rank": 110}, {"name": "Josh Jacobs", "pos": "RB", "old_low": 12, "old_high": 18, "old_mid": 15.0, "new_value": 0, "new_rank": 123}, {"name": "Xavier Worthy", "pos": "WR", "old_low": 6, "old_high": 10, "old_mid": 8.0, "new_value": 0, "new_rank": 146}, {"name": "Jordan Addison", "pos": "WR", "old_low": 4, "old_high": 7, "old_mid": 5.5, "new_value": 0, "new_rank": 145}, {"name": "Jordan Mason", "pos": "RB", "old_low": 4, "old_high": 7, "old_mid": 5.5, "new_value": 0, "new_rank": 150}, {"name": "Mark Andrews", "pos": "TE", "old_low": 4, "old_high": 7, "old_mid": 5.5, "new_value": 0, "new_rank": 121}, {"name": "Jared Goff", "pos": "QB", "old_low": 3, "old_high": 6, "old_mid": 4.5, "new_value": 0, "new_rank": 171}, {"name": "Kyler Murray", "pos": "QB", "old_low": 3, "old_high": 6, "old_mid": 4.5, "new_value": 0, "new_rank": 142}, {"name": "Tyjae Spears", "pos": "RB", "old_low": 1, "old_high": 3, "old_mid": 2.0, "new_value": 0, "new_rank": 184}, {"name": "Tank Dell", "pos": "WR", "old_low": 1, "old_high": 2, "old_mid": 1.5, "new_value": 0, "new_rank": 315}, {"name": "Dalton Kincaid", "pos": "TE", "old_low": 1, "old_high": 3, "old_mid": 2.0, "new_value": 0, "new_rank": 147}, {"name": "Harrison Butker", "pos": "K", "old_low": 1, "old_high": 2, "old_mid": 1.5, "new_value": 0, "new_rank": 127}];
+
+  var W = 640, H = 640, PAD_L = 46, PAD_B = 40, PAD_T = 14, PAD_R = 14;
+  var plotW = W - PAD_L - PAD_R, plotH = H - PAD_T - PAD_B;
+  var maxVal = 70;
+
+  function sx(v){ return PAD_L + (v/maxVal)*plotW; }
+  function sy(v){ return PAD_T + plotH - (v/maxVal)*plotH; }
+
+  var svg = document.getElementById("chart");
+  var ns = "http://www.w3.org/2000/svg";
+  function el(tag, attrs){
+    var e = document.createElementNS(ns, tag);
+    for(var k in attrs) e.setAttribute(k, attrs[k]);
+    return e;
+  }
+
+  // Gridlines + axis ticks
+  var ticks = [0,10,20,30,40,50,60,70];
+  ticks.forEach(function(t){
+    svg.appendChild(el("line", {x1:sx(t), y1:PAD_T, x2:sx(t), y2:PAD_T+plotH, class:"grid-line"}));
+    svg.appendChild(el("line", {x1:PAD_L, y1:sy(t), x2:PAD_L+plotW, y2:sy(t), class:"grid-line"}));
+    var lx = el("text", {x:sx(t), y:PAD_T+plotH+16, class:"axis-label", "text-anchor":"middle"});
+    lx.textContent = "$"+t;
+    svg.appendChild(lx);
+    var ly = el("text", {x:PAD_L-8, y:sy(t)+3, class:"axis-label", "text-anchor":"end"});
+    ly.textContent = "$"+t;
+    svg.appendChild(ly);
+  });
+
+  var xlab = el("text", {x:PAD_L+plotW/2, y:H-4, class:"axis-label", "text-anchor":"middle"});
+  xlab.textContent = "Earlier rescaled estimate ($)";
+  svg.appendChild(xlab);
+  var ylab = el("text", {x:12, y:PAD_T+plotH/2, class:"axis-label", "text-anchor":"middle", transform:"rotate(-90 12 "+(PAD_T+plotH/2)+")"});
+  ylab.textContent = "FantasyPros value ($)";
+  svg.appendChild(ylab);
+
+  // Identity line
+  svg.appendChild(el("line", {x1:sx(0), y1:sy(0), x2:sx(maxVal), y2:sy(maxVal), class:"identity-line"}));
+
+  var tooltip = document.getElementById("tooltip");
+
+  var LABEL_NAMES = ["Zay Flowers","Josh Allen","Jonathan Taylor","Josh Jacobs","Jaxon Smith-Njigba",
+    "Amon-Ra St. Brown","A.J. Brown","Kyren Williams","Derrick Henry","George Kittle","Trey McBride"];
+
+  DATA.forEach(function(d){
+    var flagged = d.new_value === 0 && d.old_mid >= 4;
+    var cx = sx(d.old_mid), cy = sy(d.new_value);
+    var c = el("circle", {cx:cx, cy:cy, r: flagged?7:5, class:"pt "+(flagged?"flag":"normal")});
+    c.addEventListener("mouseenter", function(e){
+      tooltip.innerHTML =
+        '<div class="t-name">'+d.name+' <span style="color:var(--text-muted); font-weight:400;">'+d.pos+'</span></div>'+
+        '<div class="t-row"><span>Earlier est.</span><span class="num">$'+d.old_low+'&ndash;'+d.old_high+'</span></div>'+
+        '<div class="t-row"><span>FantasyPros</span><span class="num">$'+d.new_value+' (#'+d.new_rank+')</span></div>'+
+        '<div class="t-row"><span>Diff</span><span class="num">'+(d.new_value-d.old_mid>=0?'+':'')+(d.new_value-d.old_mid).toFixed(1)+'</span></div>';
+      tooltip.style.display = "block";
+    });
+    c.addEventListener("mousemove", function(e){
+      tooltip.style.left = (e.clientX+14)+"px";
+      tooltip.style.top = (e.clientY+14)+"px";
+    });
+    c.addEventListener("mouseleave", function(){ tooltip.style.display = "none"; });
+    svg.appendChild(c);
+
+    if(LABEL_NAMES.indexOf(d.name) !== -1){
+      var above = d.new_value >= d.old_mid;
+      var t = el("text", {x:cx+8, y:cy+(above?-7:13), class:"pt-label"});
+      t.textContent = d.name;
+      svg.appendChild(t);
+    }
+  });
+
+  // Flag list
+  var flagged = DATA.filter(function(d){ return d.new_value===0 && d.old_mid>=4; })
+    .sort(function(a,b){ return b.old_mid - a.old_mid; });
+  document.getElementById("flagList").innerHTML = flagged.map(function(d){
+    return '<div><span class="fname">'+d.name+'</span> <span class="fmeta">('+d.pos+') &mdash; was $'+d.old_low+'&ndash;'+d.old_high+', now $0, FantasyPros rank #'+d.new_rank+'</span></div>';
+  }).join("");
+
+  // Full table
+  var sorted = DATA.slice().sort(function(a,b){ return b.new_value - a.new_value; });
+  var tbody = document.querySelector("#fullTable tbody");
+  tbody.innerHTML = sorted.map(function(d){
+    var flag = d.new_value===0 && d.old_mid>=4;
+    var diff = d.new_value - d.old_mid;
+    return '<tr class="'+(flag?"flag":"")+'"><td>'+d.name+'</td><td>'+d.pos+'</td>'+
+      '<td class="num">$'+d.old_low+'&ndash;'+d.old_high+'</td>'+
+      '<td class="num">$'+d.new_value+'</td>'+
+      '<td class="num">'+(diff>=0?'+':'')+diff.toFixed(1)+'</td></tr>';
+  }).join("");
+})();
+</script>
