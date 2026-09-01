@@ -41,7 +41,11 @@ sourced from email only. Anything not directly stated in an email is marked
 - **Roster/scoring settings** (starters, PPR type, flex spots, FAAB waiver
   details): **unconfirmed**. No league-settings email for this specific
   league surfaced in the searches run. The draft board defaults to a 16-man
-  roster as a placeholder — editable in the tool.
+  roster as a placeholder — editable in the tool. Two conflicting outside
+  reference points, neither this league: 2017 predecessor ran no K/DEF (see
+  below); ESPN's 2026 default PPR build (the cheat sheet Alex pulled) is
+  1 QB / 2 RB / 2 WR / 1 TE / 1 FLEX / 1 K / 1 D/ST / 7 bench = 15, *with*
+  K and D/ST.
 
 ## Roster shape — historical signal (not confirmed current)
 

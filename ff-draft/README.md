@@ -35,9 +35,15 @@ notes).
 - **`auction-values.csv`** / **`raw-fantasypros-2026.txt`** — the FantasyPros
   2026 auction values (361 players: rank, name, team, pos, injury status, $),
   as pasted by Alex and as parsed. Primary data source for the Bid Sheet.
+- **`espn-values.csv`** / **`espn-draft-kit-2026-ppr.pdf`** — ESPN's 2026
+  Draft Kit PPR cheat sheet (280 players), parsed and verbatim. A second
+  opinion — note it's built for a **10-team** league, not 8.
+- **`value-sources.md`** — how the two value sets compare, why they disagree
+  (8-team vs 10-team), and the resolution of the $0-flag players. Read this
+  before trusting either sheet blindly at the table.
 - **`value-comparison.html`** — scatter chart comparing an earlier rescaled
   heuristic to the FantasyPros values; flags players showing $0 in the
-  FantasyPros list that look mispriced.
+  FantasyPros list that look mispriced (now addressed in `value-sources.md`).
 
 ## Why one assistant, not two
 
@@ -71,11 +77,17 @@ search/read tools weren't available last session).
    found email).
 3. Confirm **roster/scoring settings** — the tool defaults to a 16-spot
    roster, editable in the Board tab. Budget is confirmed $200/team.
-   Historical signal (2017 predecessor league): QB/WR/WR/RB/RB/TE/FLEX, no
-   K/DEF in starters — directional only, 9 years old.
+   Conflicting signals: 2017 predecessor league had QB/WR/WR/RB/RB/TE/FLEX and
+   **no K/DEF** (9 years old); ESPN's 2026 default build *does* carry K + D/ST
+   (15 spots). Neither is this league's confirmed 2026 setup.
 4. Confirm **snake vs. auction** — last clear signal says auction, but never
    explicitly re-confirmed after Steph raised switching to snake.
-5. The **$0-flagged players** in `value-comparison.html` — gut-check before
-   trusting those $0s at the table.
-6. Whether FantasyPros' values were actually configured for **8-team / $200**
-   specifically (matters for how much to trust them).
+5. ~~The **$0-flagged players**~~ — addressed in `value-sources.md`: ESPN
+   prices all 7 at $1–8, so they're $1 fillers (Josh Jacobs the exception —
+   bid him like a $1–5 flex). FantasyPros' $0 = "below print threshold," not
+   "worthless."
+6. FantasyPros config is still **not confirmed** — the raw paste carries no
+   settings header. But it's markedly flatter than ESPN's known-10-team sheet
+   (see `value-sources.md`), which is consistent with a smaller-league (8-team)
+   build, so it's probably right for our table. Still no read on what *this
+   room* actually pays (needs the historical Wells sheets).
