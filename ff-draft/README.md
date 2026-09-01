@@ -37,33 +37,34 @@ gets faster and more tactical once the clock starts. Splitting it would just
 mean re-explaining league context to a second agent. `league-notes.md` is the
 shared knowledge base either way.
 
-## Auction values: what's real vs. approximate
+## Auction values: source
 
-Google Drive's search/read tools weren't available this session (only
-share/trash/update were exposed), so the historical draft-price sheets Alex
-mentioned couldn't be pulled — that's the data that would actually calibrate
-values to this specific league's bidding tendencies.
+**Update (Aug 31):** the Bid Sheet now runs on real data, not the earlier
+rescaled estimate. Alex pasted the full FantasyPros 2026 auction values list
+(361 players, 8-team/$200 PPR, already in his exact format) and it's fully
+loaded into `draft-board.html` — see `raw-fantasypros-2026.txt` (verbatim
+source as pasted) and `auction-values.csv` (parsed: rank, name, team, pos,
+injury status, value) for the durable record outside the chat. This replaced
+the earlier rescaled-from-12-team heuristic entirely — first-party consensus
+beats a generic rescale.
 
-What's in `draft-board.html` instead: current (late Aug 2026) 12-team/$200
-PPR auction consensus pulled via web search (RotoWire, Draft Sharks, Fantasy
-Points), adjusted for 8-team/$200 (same budget per team as the source data,
-just fewer teams bidding — elite/strong-starter tiers nudged above the
-12-team consensus, streamer/bench tiers compressed down, since replacement-
-level talent is relatively more plentiful across only 8 rosters). This is a
-**heuristic, not a calibration** — treat the ranges in the Bid Sheet tab as a
-starting anchor and let the room's real bidding move you off them.
-
-**To get an actually-calibrated sheet**: either fix Drive access so the past
-draft sheets can be read, or paste/share the historical auction prices
-directly and the values can be rebuilt from real data instead of rescaled
-consensus.
+It's still not calibrated to *this specific league's* historical bidding
+(different rooms bid differently), but it's real market data rather than an
+estimate. Google Drive's search/read tools weren't available this session
+(only share/trash/update were exposed), so the historical Wells draft sheets
+Alex mentioned still haven't been pulled — that remains the one step that
+would tune this to the room's actual tendencies rather than the broader
+market.
 
 ## Still open (needs Alex, not blocking use of the tool)
 
-1. Confirm the 8:30pm vs 8:30am draft-time mismatch in Yahoo.
+1. ~~8:30pm vs 8:30am draft-time mismatch~~ — resolved: 8:30pm–10pm PDT
+   confirmed against the Zoom calendar invite. Yahoo's in-system time (8:30am)
+   is still wrong and worth fixing so it stops confusing anyone who checks
+   Yahoo directly.
 2. Confirm payout split percentages ("usual splits" — never stated in a
    found email).
-3. Confirm roster/scoring settings — the tool defaults to a 16-spot roster
-   and $100 budget, both editable in the Board tab.
+3. Confirm roster/scoring settings — the tool defaults to a 16-spot roster,
+   editable in the Board tab. Budget is confirmed $200/team.
 4. Confirm snake vs. auction stuck as auction (last clear signal says yes,
    but never explicitly re-confirmed after Steph raised switching to snake).
