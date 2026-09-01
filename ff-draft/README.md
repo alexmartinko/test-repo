@@ -22,16 +22,24 @@ notes).
   more commish reference gets nailed down.
 - **`draft-board.html`** — the live draft-day tool (one capability of the
   assistant, not a separate thing). Single-page, no-build. Also published as a
-  Claude Artifact for use on a phone/laptop during the Zoom draft. Three views:
+  Claude Artifact for use on a phone/laptop during the Zoom draft. Four views:
   - **Board** — all 8 teams, remaining budget, roster spots filled, and a
     live **max bid** figure (remaining budget minus $1 per roster spot still
     needed) so nobody prices themselves out of filling a roster.
+  - **Strategy** — pick one of 5 budget shapes (Studs / RB-heavy / Balanced /
+    Elite QB / Elite TE), see per-slot target vs. what your team actually
+    paid, your true max bid right now, and how many players are left in each
+    position tier. See `draft-plan.md` for the reasoning.
   - **Bid Sheet** — an editable, searchable auction value cheat sheet (see
-    source note below), with a one-tap "Log" that jumps to the pick form.
+    source note below) with **position tier chips** on every row, and a
+    one-tap "Log" that jumps to the pick form.
   - **Log Pick** — records player/position/price/team; updates every team's
     budget and the bid sheet instantly. Autosaves to the browser via
     localStorage (single-device only — pick one device to be the source of
     truth during the draft).
+- **`draft-plan.md`** — the durable record of the 5 budget strategies
+  (recomputed on FantasyPros 2026 values) and the position tiers, with
+  web-checked notes on the injury/bubble cases.
 - **`auction-values.csv`** / **`raw-fantasypros-2026.txt`** — the FantasyPros
   2026 auction values (361 players: rank, name, team, pos, injury status, $),
   as pasted by Alex and as parsed. Primary data source for the Bid Sheet.

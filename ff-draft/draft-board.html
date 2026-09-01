@@ -262,6 +262,75 @@
     margin-top:28px; font-size:11.5px; color:var(--ink-muted); line-height:1.6;
     border-top:1px solid var(--border); padding-top:12px;
   }
+
+  /* ---- Tier chips ---- */
+  .tier-chip{
+    display:inline-block; font-size:9.5px; font-weight:700; padding:1px 5px;
+    border-radius:4px; letter-spacing:0.02em; white-space:nowrap;
+  }
+  .tier-1{background:#2F6E4F; color:#fff;}
+  .tier-2{background:#4E8C6A; color:#fff;}
+  .tier-3{background:var(--warn-bg); color:var(--warn);}
+  .tier-4{background:var(--surface-2); color:var(--ink-muted);}
+  .tier-5,.tier-6,.tier-7{background:var(--surface-2); color:var(--ink-muted); opacity:0.8;}
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]) .tier-1{background:#5FAE82; color:#0C1412;}
+    :root:not([data-theme="light"]) .tier-2{background:#3C7D5C; color:#EDEDE6;}
+  }
+  :root[data-theme="dark"] .tier-1{background:#5FAE82; color:#0C1412;}
+  :root[data-theme="dark"] .tier-2{background:#3C7D5C; color:#EDEDE6;}
+
+  /* ---- Strategy panel ---- */
+  .strat-pick{display:flex; gap:5px; flex-wrap:wrap; margin-bottom:12px;}
+  .strat-pick button{
+    flex:1 1 auto; min-width:88px; padding:8px 6px; border-radius:8px;
+    border:1px solid var(--border); background:var(--surface); color:var(--ink-muted);
+    font-size:12px; font-weight:600; cursor:pointer;
+  }
+  .strat-pick button[aria-pressed="true"]{
+    background:var(--accent); color:var(--accent-ink); border-color:var(--accent);
+  }
+  .strat-blurb{
+    font-size:12px; color:var(--ink-muted); background:var(--surface-2);
+    border-radius:8px; padding:9px 12px; margin-bottom:12px; line-height:1.5;
+  }
+  .me-row{
+    display:flex; align-items:center; gap:8px; font-size:12.5px;
+    color:var(--ink-muted); margin-bottom:12px;
+  }
+  .me-row select{
+    padding:5px 8px; border:1px solid var(--border); border-radius:6px;
+    background:var(--surface); color:var(--ink); font-size:13px;
+  }
+  table.strat-table{width:100%; border-collapse:collapse; font-size:13px;}
+  table.strat-table th{
+    text-align:right; font-size:10px; text-transform:uppercase; letter-spacing:0.04em;
+    color:var(--ink-muted); padding:6px 8px; border-bottom:1px solid var(--border);
+  }
+  table.strat-table th:first-child{text-align:left;}
+  table.strat-table td{padding:6px 8px; border-bottom:1px solid var(--border); text-align:right;}
+  table.strat-table td:first-child{text-align:left; color:var(--ink-muted);}
+  table.strat-table td .who{color:var(--ink);}
+  table.strat-table tr.filled td:first-child .who{color:var(--ink);}
+  .delta-pos{color:var(--good); font-weight:600;}
+  .delta-neg{color:var(--critical); font-weight:600;}
+  .strat-summary{
+    display:flex; gap:14px; flex-wrap:wrap; margin:14px 0 6px;
+  }
+  .strat-summary .s{display:flex; flex-direction:column;}
+  .strat-summary .s .l{font-size:10px; text-transform:uppercase; letter-spacing:0.05em; color:var(--ink-muted);}
+  .strat-summary .s .v{font-size:18px; font-weight:700;}
+  .strat-summary .s .v.money{color:var(--money);}
+  .tiers-remaining{margin-top:18px;}
+  .tiers-remaining h3{font-size:13px; margin-bottom:8px;}
+  .tr-grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(150px,1fr)); gap:8px;}
+  .tr-cell{
+    background:var(--surface); border:1px solid var(--border); border-radius:8px;
+    padding:8px 10px; font-size:12px;
+  }
+  .tr-cell .pos{font-weight:700; font-size:11px; color:var(--ink-muted); text-transform:uppercase;}
+  .tr-cell .line{display:flex; justify-content:space-between; margin-top:3px;}
+  .tr-cell .line.thin{color:var(--critical); font-weight:600;}
 </style>
 
 <header class="top">
@@ -275,6 +344,7 @@
     </div>
     <nav class="tabs" role="tablist">
       <button class="tab" role="tab" data-panel="board" aria-selected="true">Board</button>
+      <button class="tab" role="tab" data-panel="strategy" aria-selected="false">Strategy</button>
       <button class="tab" role="tab" data-panel="sheet" aria-selected="false">Bid Sheet</button>
       <button class="tab" role="tab" data-panel="log" aria-selected="false">Log Pick</button>
     </nav>
@@ -288,10 +358,38 @@
     <section class="panel active" id="panel-board">
       <div class="settings-row">
         <label>Budget/team $<input type="number" id="cfgBudget" value="200" min="1"></label>
-        <label>Roster spots<input type="number" id="cfgRoster" value="16" min="1"></label>
+        <label>Roster spots<input type="number" id="cfgRoster" value="17" min="1"></label>
         <span style="font-size:11.5px;">Max bid = remaining &minus; (roster spots left &minus; 1)</span>
       </div>
       <div class="team-grid" id="teamGrid"></div>
+    </section>
+
+    <!-- STRATEGY -->
+    <section class="panel" id="panel-strategy">
+      <div class="me-row">
+        <span>My team:</span>
+        <select id="myTeam"></select>
+        <span style="font-size:11.5px;">&mdash; targets track against this team's logged picks</span>
+      </div>
+      <div class="strat-pick" id="stratPick"></div>
+      <div class="strat-blurb" id="stratBlurb"></div>
+      <div class="table-scroll">
+        <table class="strat-table">
+          <thead><tr><th>Slot</th><th>Target</th><th>Actual</th><th>&Delta;</th></tr></thead>
+          <tbody id="stratBody"></tbody>
+        </table>
+      </div>
+      <div class="strat-summary" id="stratSummary"></div>
+      <div class="tiers-remaining">
+        <h3>Tiers left on the board</h3>
+        <div class="tr-grid" id="tiersRemaining"></div>
+      </div>
+      <p style="font-size:11px;color:var(--ink-muted);line-height:1.6;margin-top:14px;">
+        Targets are guides, not limits &mdash; recomputed from FantasyPros 2026 values for an 8-team
+        PPR league with stacking yardage bonuses (10 starters, ~7 bench, $200). &ldquo;Committed&rdquo;
+        = &dollar;1 &times; unfilled bench + sum of unmet starter targets; your true max bid is
+        remaining minus that.
+      </p>
     </section>
 
     <!-- BID SHEET -->
@@ -751,6 +849,81 @@
     });
   }
 
+  /* ---- Tiers (FantasyPros 2026 $ thresholds, web-checked bubble cases) ---- */
+  var TIER_BREAKS = {
+    QB: [[20,"Elite (one of one)"],[7,"Cheap difference-maker"],[2,"Low-end starter"],[0,"Stream"]],
+    RB: [[50,"Elite RB1"],[38,"Strong RB1"],[26,"Back-end RB1"],[19,"Solid RB2"],[10,"Flex / upside"],[4,"Dart throw"],[0,"$1 lottery"]],
+    WR: [[50,"Elite WR1"],[32,"Strong WR1"],[24,"Mid WR1 / high WR2"],[18,"Solid WR2"],[11,"Flex WR"],[5,"Bench upside"],[0,"$1 dart"]],
+    TE: [[25,"Elite (positional edge)"],[9,"Streamable starter"],[3,"Punt / stream"],[0,"$1"]],
+    K:  [[0,"Kicker"]],
+    DST:[[0,"Defense"]]
+  };
+  // Manual overrides where the sheet $ misprices a player vs 2026 consensus.
+  var TIER_OVERRIDE = { "Joe Burrow": {tier:2, note:"underpriced — top-3 QB, volume passer = bonus gold"} };
+  function tierInfo(row){
+    var ov = TIER_OVERRIDE[row.name];
+    var breaks = TIER_BREAKS[row.pos] || [[0,""]];
+    var t = breaks.length, label = breaks[breaks.length-1][1];
+    for(var i=0;i<breaks.length;i++){ if(row.value >= breaks[i][0]){ t=i+1; label=breaks[i][1]; break; } }
+    if(ov){ t = ov.tier; label = (breaks[ov.tier-1]||[0,label])[1]; }
+    return {tier:t, label:label, note: ov?ov.note:""};
+  }
+
+  /* ---- Strategy profiles: per-slot $ targets (8-team PPR + yardage bonuses) ---- */
+  var SLOTS = ["QB1","RB1","RB2","WR1","WR2","TE1","FLEX1","FLEX2","K","D"];
+  var STRATEGY_PROFILES = {
+    balanced: {
+      label:"Balanced",
+      blurb:"The bailout, not the goal. Spread it if the room torches the top and concentration isn't available at a price. Won't embarrass you; leaves EV on the table.",
+      targets:{QB1:6,RB1:46,RB2:28,WR1:40,WR2:28,TE1:6,FLEX1:22,FLEX2:11,K:1,D:1}
+    },
+    rbheavy: {
+      label:"RB-heavy",
+      blurb:"Controlled Studs. Anchor a top-3 RB + strong RB2 (steepest talent cliff + best bonus equity), punt QB/TE/WR2. Most of the upside, better floor. Your pivot.",
+      targets:{QB1:5,RB1:64,RB2:36,WR1:30,WR2:20,TE1:4,FLEX1:16,FLEX2:11,K:1,D:1}
+    },
+    studs: {
+      label:"Studs",
+      blurb:"Plan A. Three alphas (~$166 across RB1 + WR1 + Flex-1), everything else $1–4 + upside darts. Highest ceiling in a shallow, ceiling-rewarding league. Variance is the price.",
+      targets:{QB1:3,RB1:70,RB2:4,WR1:62,WR2:4,TE1:1,FLEX1:34,FLEX2:3,K:1,D:1}
+    },
+    elitete: {
+      label:"Elite TE",
+      blurb:"Only if McBride (~$35) or Bowers (~$30) falls into range. Balanced elsewhere. Weakest fit — premium at the position the bonuses barely touch, in a format shallow enough to stream TE.",
+      targets:{QB1:5,RB1:42,RB2:26,WR1:36,WR2:16,TE1:34,FLEX1:16,FLEX2:11,K:1,D:1}
+    },
+    eliteqb: {
+      label:"Elite QB",
+      blurb:"Josh Allen or bust — the only QB the bonus scoring justifies a premium for (pass AND rush bonus). ~$30 shifted out of RB2/WR2/flex. Skip unless Allen falls to ~$25.",
+      targets:{QB1:38,RB1:44,RB2:20,WR1:34,WR2:18,TE1:4,FLEX1:16,FLEX2:8,K:1,D:1}
+    }
+  };
+  var PROFILE_ORDER = ["studs","rbheavy","balanced","eliteqb","elitete"];
+
+  // Assign a team's picks to roster slots for target-vs-actual.
+  function assignSlots(picks){
+    var out = {}; SLOTS.forEach(function(s){ out[s]=null; });
+    var pools = {QB:[],RB:[],WR:[],TE:[],K:[],DST:[]};
+    picks.forEach(function(p){ (pools[p.pos]||(pools[p.pos]=[])).push(p); });
+    if(pools.QB[0]) out.QB1 = pools.QB.shift();
+    if(pools.RB[0]) out.RB1 = pools.RB.shift();
+    if(pools.RB[0]) out.RB2 = pools.RB.shift();
+    if(pools.WR[0]) out.WR1 = pools.WR.shift();
+    if(pools.WR[0]) out.WR2 = pools.WR.shift();
+    if(pools.TE[0]) out.TE1 = pools.TE.shift();
+    if(pools.K[0])  out.K  = pools.K.shift();
+    if(pools.DST[0])out.D  = pools.DST.shift();
+    // remaining RB/WR/TE fill the two flexes, best (priciest) first
+    var flexPool = pools.RB.concat(pools.WR, pools.TE)
+      .sort(function(a,b){return b.price-a.price;});
+    if(flexPool[0]) out.FLEX1 = flexPool[0];
+    if(flexPool[1]) out.FLEX2 = flexPool[1];
+    var startersUsed = Object.keys(out).filter(function(k){return out[k];})
+      .map(function(k){return out[k];});
+    var bench = picks.filter(function(p){return startersUsed.indexOf(p)===-1;});
+    return {slots:out, bench:bench};
+  }
+
   function loadState(){
     var raw;
     try{ raw = localStorage.getItem(STORAGE_KEY); }catch(e){ raw = null; }
@@ -765,15 +938,19 @@
           var row = parsed.board.filter(function(r){return r.name.toLowerCase()===p.player.toLowerCase();})[0];
           if(row) row.drafted = true;
         });
+        if(!parsed.strategyProfile) parsed.strategyProfile = "studs";
+        if(!parsed.myTeamId) parsed.myTeamId = "alex";
         return parsed;
       }catch(e){ /* fall through */ }
     }
     return {
       boardVersion: DATA_VERSION,
-      settings:{budget:200, roster:16},
+      settings:{budget:200, roster:17},
       teams: DEFAULT_TEAMS,
       board: buildBoard(),
-      picks: []
+      picks: [],
+      strategyProfile: "studs",
+      myTeamId: "alex"
     };
   }
 
@@ -872,9 +1049,12 @@
       if(row.drafted) tr.className = "drafted";
       var statusHtml = row.status ? ' <span class="status-pill status-'+esc(row.status.toLowerCase())+'">'+esc(row.status)+'</span>' : '';
       var teamHtml = row.team ? ' <span class="team-tag">'+esc(row.team)+'</span>' : '';
+      var ti = tierInfo(row);
+      var tierHtml = (row.pos==="K"||row.pos==="DST") ? '' :
+        ' <span class="tier-chip tier-'+ti.tier+'" title="'+esc(ti.label)+(ti.note?' — '+esc(ti.note):'')+'">'+esc(row.pos)+' T'+ti.tier+'</span>';
       tr.innerHTML =
         '<td class="num" style="color:var(--ink-muted);">'+row.rank+'</td>'+
-        '<td class="pname">'+esc(row.name)+teamHtml+statusHtml+'</td>'+
+        '<td class="pname">'+esc(row.name)+teamHtml+statusHtml+tierHtml+'</td>'+
         '<td><span class="pos-chip">'+esc(row.pos)+'</span></td>'+
         '<td class="range num">'+money(row.value)+'</td>'+
         '<td>'+(row.drafted?'':'<button type="button" class="draft-btn" data-idx="'+idx+'">Log</button>')+'</td>';
@@ -918,12 +1098,111 @@
     list.innerHTML = rows.join("");
   }
 
+  var SLOT_LABEL = {QB1:"QB",RB1:"RB 1",RB2:"RB 2",WR1:"WR 1",WR2:"WR 2",TE1:"TE",FLEX1:"Flex 1",FLEX2:"Flex 2",K:"K",D:"D/ST"};
+
+  function renderMyTeamSelect(){
+    var sel = document.getElementById("myTeam");
+    if(!sel) return;
+    sel.innerHTML = state.teams.map(function(t){
+      return '<option value="'+t.id+'"'+(t.id===state.myTeamId?' selected':'')+'>'+esc(t.owner)+' &mdash; '+esc(t.name)+'</option>';
+    }).join("");
+  }
+
+  function renderStratPicker(){
+    var wrap = document.getElementById("stratPick");
+    if(!wrap) return;
+    wrap.innerHTML = PROFILE_ORDER.map(function(k){
+      var p = STRATEGY_PROFILES[k];
+      return '<button type="button" data-profile="'+k+'" aria-pressed="'+(k===state.strategyProfile)+'">'+esc(p.label)+'</button>';
+    }).join("");
+  }
+
+  function renderStrategy(){
+    var body = document.getElementById("stratBody");
+    if(!body) return;
+    var prof = STRATEGY_PROFILES[state.strategyProfile] || STRATEGY_PROFILES.studs;
+    document.getElementById("stratBlurb").textContent = prof.blurb;
+
+    var budget = Number(state.settings.budget)||0;
+    var roster = Number(state.settings.roster)||17;
+    var benchSpots = Math.max(roster - SLOTS.length, 0);
+    var picks = teamPicks(state.myTeamId);
+    var a = assignSlots(picks);
+
+    var starterTargetSum = 0, unmetTarget = 0, rows = "";
+    SLOTS.forEach(function(s){
+      var tgt = prof.targets[s] || 0;
+      starterTargetSum += tgt;
+      var pick = a.slots[s];
+      var actual = pick ? pick.price : null;
+      if(!pick) unmetTarget += tgt;
+      var delta = pick ? (tgt - actual) : null;
+      var deltaHtml = pick
+        ? '<span class="'+(delta>=0?'delta-pos':'delta-neg')+'">'+(delta>=0?'+':'')+money(delta).replace('$','')+'</span>'
+        : '<span style="color:var(--ink-muted);">&mdash;</span>';
+      rows += '<tr class="'+(pick?'filled':'')+'">'+
+        '<td>'+SLOT_LABEL[s]+(pick?' <span class="who">'+esc(pick.player)+'</span>':'')+'</td>'+
+        '<td class="num">'+money(tgt)+'</td>'+
+        '<td class="num">'+(pick?money(actual):'<span style="color:var(--ink-muted);">&mdash;</span>')+'</td>'+
+        '<td class="num">'+deltaHtml+'</td>';
+      rows += '</tr>';
+    });
+    body.innerHTML = rows;
+
+    var spent = teamSpent(state.myTeamId);
+    var remaining = budget - spent;
+    var benchFilled = a.bench.length;
+    var benchLeft = Math.max(benchSpots - benchFilled, 0);
+    var committed = unmetTarget + benchLeft; // $1 per empty bench spot
+    var trueMax = remaining - committed;
+    if(trueMax < 0) trueMax = 0;
+    var starterSlotsLeft = SLOTS.filter(function(s){return !a.slots[s];}).length;
+
+    document.getElementById("stratSummary").innerHTML =
+      '<div class="s"><span class="l">Remaining</span><span class="v money num">'+money(remaining)+'</span></div>'+
+      '<div class="s"><span class="l">Committed to slots left</span><span class="v num">'+money(committed)+'</span></div>'+
+      '<div class="s"><span class="l">True max bid now</span><span class="v num">'+money(trueMax)+'</span></div>'+
+      '<div class="s"><span class="l">Starters left</span><span class="v num">'+starterSlotsLeft+'</span></div>'+
+      '<div class="s"><span class="l">Bench</span><span class="v num">'+benchFilled+'/'+benchSpots+'</span></div>';
+
+    renderTiersRemaining();
+  }
+
+  function renderTiersRemaining(){
+    var wrap = document.getElementById("tiersRemaining");
+    if(!wrap) return;
+    var counts = {}; // pos -> tier -> {left, labels}
+    state.board.forEach(function(r){
+      if(r.pos==="K"||r.pos==="DST") return;
+      if(r.value<=0) return;
+      var ti = tierInfo(r);
+      counts[r.pos] = counts[r.pos] || {};
+      var c = counts[r.pos][ti.tier] = counts[r.pos][ti.tier] || {left:0,total:0,label:ti.label};
+      c.total++;
+      if(!r.drafted) c.left++;
+    });
+    var order = ["QB","RB","WR","TE"];
+    wrap.innerHTML = order.map(function(pos){
+      var byTier = counts[pos]||{};
+      var lines = Object.keys(byTier).sort(function(x,y){return x-y;}).map(function(t){
+        var c = byTier[t];
+        if(c.total===0) return "";
+        var thin = c.left<=2 && Number(t)<=4;
+        return '<div class="line'+(thin?' thin':'')+'"><span>T'+t+' '+esc(c.label)+'</span><span>'+c.left+' left</span></div>';
+      }).join("");
+      return '<div class="tr-cell"><div class="pos">'+pos+'</div>'+lines+'</div>';
+    }).join("");
+  }
+
   function renderAll(){
     renderStats();
     renderTeams();
     renderSheet();
     renderPlayerList();
     renderTeamSelect();
+    renderMyTeamSelect();
+    renderStratPicker();
+    renderStrategy();
     renderLog();
   }
 
@@ -944,7 +1223,19 @@
     state.settings.budget = Number(e.target.value)||0; saveState(); renderStats(); renderTeams();
   });
   document.getElementById("cfgRoster").addEventListener("input", function(e){
-    state.settings.roster = Number(e.target.value)||1; saveState(); renderTeams();
+    state.settings.roster = Number(e.target.value)||1; saveState(); renderTeams(); renderStrategy();
+  });
+
+  // Strategy panel
+  document.getElementById("stratPick").addEventListener("click", function(e){
+    var btn = e.target.closest("button[data-profile]");
+    if(!btn) return;
+    state.strategyProfile = btn.dataset.profile;
+    saveState(); renderStratPicker(); renderStrategy();
+  });
+  document.getElementById("myTeam").addEventListener("change", function(e){
+    state.myTeamId = e.target.value;
+    saveState(); renderStrategy();
   });
 
   // Sheet filters
