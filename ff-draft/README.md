@@ -78,9 +78,9 @@ search/read tools weren't available last session).
 3. **Scoring: confirmed** (Yahoo screenshots) — PPR + stacking yardage
    bonuses (+5 at 300/400/500 pass, 100/200/300 rush, 100/200/300 rec). Tilts
    toward ceiling / elite + dual-threat QB; see `value-sources.md`.
-   **Roster: still unconfirmed from Yahoo**, but Alex's 2020–2024 analysis
-   sheets all use QB/RB/RB/WR/WR/TE/FLEX/FLEX/D/K + 7 bench = 17. Tool still
-   defaults to 16 — bump to 17 once confirmed. Budget confirmed $200/team.
+   **Roster starters confirmed** (Yahoo): 1 QB / 2 RB / 2 WR / 1 TE / 2 W-R-T
+   flex / 1 K / 1 D/ST = 10. Bench count still unconfirmed (sheets assume 7 →
+   17 total). Tool defaults to 16 — set once bench is known. Budget $200/team.
 4. Confirm **snake vs. auction** — last clear signal says auction, but never
    explicitly re-confirmed after Steph raised switching to snake.
 5. ~~The **$0-flagged players**~~ — addressed in `value-sources.md`: ESPN

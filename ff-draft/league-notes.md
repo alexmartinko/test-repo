@@ -38,13 +38,16 @@ sourced from email only. Anything not directly stated in an email is marked
   distributed on the usual splits" — the actual payout split percentages
   were never stated in any thread found. **Unconfirmed** — needs a direct
   answer from Alex or a look at the Yahoo league's payout settings.
-- **Roster settings** (starter slots, flex count, bench, FAAB): still
-  **unconfirmed** from Yahoo directly. Best evidence is Alex's own 2020–2024
-  "FF Draft Analysis" sheets (Google Drive → Fantasy Football/), all built for
-  this league on **QB / RB / RB / WR / WR / TE / FLEX / FLEX / D / K = 10
-  starters + 7 bench = 17**, $180 starter / $20 bench convention. The 2017
-  predecessor's no-K/DEF lineup is superseded by this. Draft-board tool still
-  defaults to 16 — bump to 17 once confirmed.
+- **Roster — starters CONFIRMED** (Yahoo Commissioner tools, Sept 1 2026):
+  1 QB, 2 RB, 2 WR, 1 TE, **2 W/R/T flex** (RB/WR/TE-eligible), 1 K, 1 D/ST =
+  **10 starters**. No superflex (Q/W/R/T = 0), no IDP, no OP. This matches
+  Alex's 2020–2024 "FF Draft Analysis" sheets (Google Drive → Fantasy
+  Football/) exactly and supersedes the 2017 no-K/DEF signal. **Bench count
+  still unconfirmed** from Yahoo — the sheets assume 7 (→ 17 total, $180
+  starter / $20 bench convention). Draft-board tool defaults to 16; set to
+  starters + bench once bench is known.
+- Because both flex slots are RB/WR/TE, a build can run 3 RB + 3 WR + 2 TE
+  across the flexes — no forced positional split beyond the 2/2/1 minimums.
 - **Scoring — CONFIRMED custom (Yahoo settings screenshots, Sept 1 2026)**:
   PPR (1 per reception) **plus stacking yardage bonuses**, all toggled on:
   - Passing yards: +5 at 300, +5 at 400, +5 at 500 (cumulative — a 500-yd
